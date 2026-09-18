@@ -84,4 +84,4 @@ Les présentes CGU sont soumises au droit français. Tout litige relatif à leur
 
 ## 14. Contact
 
-Pour toute question relative à ces CGU : **guillaumeraspaud@gmail.com**
+Pour toute question relative à ces CGU : **contact@nibblenibble.app**

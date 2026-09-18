@@ -7,7 +7,7 @@
 nibblenibble est une application mobile qui aide les familles à suivre la diversification alimentaire de leur bébé. Cette politique explique quelles données sont collectées, pourquoi, et comment les contrôler.
 
 **Responsable du traitement :** Guillaume Raspaud
-**Contact :** guillaumeraspaud@gmail.com
+**Contact :** contact@nibblenibble.app
 
 ## 2. Quelles données sont collectées
 
@@ -88,7 +88,7 @@ Si tu résides dans l'Union européenne, tu disposes des droits suivants sur tes
 - **Droit à la portabilité** : recevoir tes données dans un format exploitable.
 - **Droit d'opposition** : t'opposer à certains traitements (ex. publicité personnalisée).
 
-Pour exercer ces droits au-delà de ce que permet l'app directement, contacte-nous à **guillaumeraspaud@gmail.com**.
+Pour exercer ces droits au-delà de ce que permet l'app directement, contacte-nous à **contact@nibblenibble.app**.
 
 Tu peux aussi introduire une réclamation auprès de la CNIL (Commission Nationale de l'Informatique et des Libertés) : [www.cnil.fr](https://www.cnil.fr).
 
@@ -110,4 +110,4 @@ Cette politique peut évoluer avec l'app. En cas de changement important, nous t
 
 ## 13. Contact
 
-Pour toute question sur cette politique ou tes données : **guillaumeraspaud@gmail.com**
+Pour toute question sur cette politique ou tes données : **contact@nibblenibble.app**
