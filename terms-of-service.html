@@ -8,8 +8,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap" rel="stylesheet">
 <style>
   :root {
-    --cream: #FBF5EC; --cream-deep: #F3E8D8; --card: #FFFEFB;
-    --ink: #3A2E22; --ink-soft: #8A7B68; --coral: #E8734F; --line: #EBE0D1;
+    --cream: #FBF6EF; --cream-deep: #E7E2F7; --card: #FFFFFF;
+    --ink: #2E2620; --ink-soft: #7C6F5E; --primary: #4B3B8C; --line: #EDE2D3;
   }
   * { box-sizing: border-box; }
   /* Regular weight everywhere, no bold. */
@@ -18,8 +18,8 @@
     margin: 0; background: var(--cream); color: var(--ink);
     font-family: 'Poppins', system-ui, sans-serif; line-height: 1.65; font-size: 16px;
   }
-  header { background: var(--coral); color: #fff; padding: 28px 16px; text-align: center; }
-  /* The SVG has no fill (black): invert it to white on the coral banner. */
+  header { background: var(--primary); color: #fff; padding: 28px 16px; text-align: center; }
+  /* The SVG has no fill (black): invert it to white on the indigo banner. */
   header .logo { height: 28px; width: auto; display: inline-block; filter: brightness(0) invert(1); }
   main {
     max-width: 760px; margin: -18px auto 40px; padding: 28px 24px 32px;
@@ -27,11 +27,11 @@
   }
   h1 { font-size: 26px; line-height: 1.25; margin: 0 0 4px; }
   .updated { color: var(--ink-soft); font-size: 14px; margin: 0 0 24px; }
-  h2 { font-size: 19px; margin: 32px 0 8px; color: var(--coral); }
+  h2 { font-size: 19px; margin: 32px 0 8px; color: var(--primary); }
   p, ul { margin: 8px 0; }
   ul { padding-left: 22px; }
   li { margin: 4px 0; }
-  a { color: var(--coral); }
+  a { color: var(--primary); }
   .notice {
     background: var(--cream-deep); border: 1px solid var(--line);
     border-radius: 16px; padding: 12px 16px; margin: 14px 0;
