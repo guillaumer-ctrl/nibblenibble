@@ -19,29 +19,41 @@ class AnimatedAccordion extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final duration = Motion.reduced(context)
-        ? MotionDurations.reduced
-        : MotionDurations.tab;
+    final content = ClipRect(
+      child: Align(
+        // topLeft, not topCenter — with only heightFactor set, Align
+        // fills the full available width and then centers its child
+        // horizontally within that box unless told otherwise, which
+        // was centering the food chips instead of keeping them flush
+        // left like the rest of the accordion content.
+        alignment: Alignment.topLeft,
+        heightFactor: expanded ? 1.0 : 0.0,
+        child: child,
+      ),
+    );
+    // AnimatedSize restarts its internal AnimationController synchronously
+    // inside its own performLayout when the target size changes; with a
+    // zero duration (reduced motion) that controller completes instantly
+    // and re-dirties the render object *while it's still laying out*,
+    // which crashes ("RenderAnimatedSize was mutated in its own
+    // performLayout implementation" — seen in Crashlytics). Skipping
+    // AnimatedSize entirely when reduced avoids ever handing it a zero
+    // duration, and matches the accessibility intent anyway (no motion).
+    if (Motion.reduced(context)) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [header, content],
+      );
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         header,
         AnimatedSize(
-          duration: duration,
+          duration: MotionDurations.tab,
           curve: MotionCurves.standard,
           alignment: Alignment.topCenter,
-          child: ClipRect(
-            child: Align(
-              // topLeft, not topCenter — with only heightFactor set, Align
-              // fills the full available width and then centers its child
-              // horizontally within that box unless told otherwise, which
-              // was centering the food chips instead of keeping them flush
-              // left like the rest of the accordion content.
-              alignment: Alignment.topLeft,
-              heightFactor: expanded ? 1.0 : 0.0,
-              child: child,
-            ),
-          ),
+          child: content,
         ),
       ],
     );

@@ -12,6 +12,7 @@ import 'widgets/app_loading_indicator.dart';
 import 'widgets/error_retry_view.dart';
 import 'widgets/nibble_wordmark.dart';
 import 'widgets/offline_banner.dart';
+import 'widgets/responsive_center.dart';
 
 /// Lets code that no longer has a live [BuildContext] (e.g. a delete flow
 /// that pops its screen before an async operation finishes) still surface a
@@ -48,7 +49,8 @@ class NibbleNibbleApp extends ConsumerWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      builder: (context, child) => OfflineBanner(child: child!),
+      builder: (context, child) =>
+          ResponsiveCenter(child: OfflineBanner(child: child!)),
       home: const AuthGate(),
     );
   }

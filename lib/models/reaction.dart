@@ -23,15 +23,17 @@ enum Reaction {
     };
   }
 
-  /// Soft pastel tint used for backgrounds/borders behind [color].
-  Color tint(BuildContext context) {
-    final c = AppColors.of(context);
-    return switch (this) {
-      Reaction.aime => c.sageLight,
-      Reaction.mitige => c.amberLight,
-      Reaction.pasAime => c.redLight,
-    };
-  }
+  /// Tint used for backgrounds/borders behind [color] — callers apply their
+  /// own alpha (a soft wash for fills, closer to opaque for borders).
+  ///
+  /// This used to return the theme's dedicated `sageLight`/`amberLight`/
+  /// `redLight` tokens, but those are tuned for solid decorative fills
+  /// (e.g. the blob behind [WelcomeScreen]) and are near-black in dark
+  /// mode, so an alpha-blended chip built from them was nearly invisible
+  /// against the dark background. [color] itself is already a bright,
+  /// theme-adjusted tone in dark mode, so it reads correctly at any alpha
+  /// in both themes.
+  Color tint(BuildContext context) => color(context);
 
   String label(BuildContext context) =>
       AppStrings.of(context).reactionLabel(name);

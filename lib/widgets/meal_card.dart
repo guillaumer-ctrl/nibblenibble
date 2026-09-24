@@ -112,6 +112,17 @@ class MealCard extends ConsumerWidget {
                   );
                 }).toList(),
               ),
+              if ((meal.note ?? '').trim().isNotEmpty) ...[
+                const SizedBox(height: 10),
+                Text(
+                  meal.note!.trim(),
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontStyle: FontStyle.italic,
+                    color: colors.inkSoft,
+                  ),
+                ),
+              ],
               if (loggedByName != null) ...[
                 const SizedBox(height: 8),
                 Text(

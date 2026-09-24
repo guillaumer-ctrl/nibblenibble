@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -43,29 +44,34 @@ class _BugReportScreenState extends ConsumerState<BugReportScreen> {
     super.dispose();
   }
 
+  Future<String> _buildReportBody(AppStrings s) async {
+    final info = await PackageInfo.fromPlatform();
+    final replyEmail = _emailController.text.trim();
+    return '${_descriptionController.text.trim()}\n\n'
+        '---\n'
+        '${s.bugReportEmailLabel}: $replyEmail\n'
+        'nibblenibble ${info.version} (${info.buildNumber})';
+  }
+
+  bool _validate(AppStrings s) {
+    if (_descriptionController.text.trim().isEmpty) {
+      AppSnackBar.showError(context, s.bugReportEmptyDescription);
+      return false;
+    }
+    return true;
+  }
+
   Future<void> _send() async {
     final s = AppStrings.of(context);
-    final description = _descriptionController.text.trim();
-    if (description.isEmpty) {
-      AppSnackBar.showError(context, s.bugReportEmptyDescription);
-      return;
-    }
+    if (!_validate(s)) return;
     setState(() => _sending = true);
     try {
-      final info = await PackageInfo.fromPlatform();
-      final replyEmail = _emailController.text.trim();
+      final body = await _buildReportBody(s);
       final uri = Uri(
         scheme: 'mailto',
         path: _bugReportEmail,
         query: Uri(
-          queryParameters: {
-            'subject': s.bugReportSubject,
-            'body':
-                '$description\n\n'
-                '---\n'
-                '${s.bugReportEmailLabel}: $replyEmail\n'
-                'nibblenibble ${info.version} (${info.buildNumber})',
-          },
+          queryParameters: {'subject': s.bugReportSubject, 'body': body},
         ).query,
       );
       final ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
@@ -73,11 +79,26 @@ class _BugReportScreenState extends ConsumerState<BugReportScreen> {
       if (ok) {
         Navigator.of(context).pop();
       } else {
-        AppSnackBar.showError(context, s.openLinkFailed);
+        // No mail app registered to handle mailto: (common on a fresh
+        // device/emulator, or a phone with no mail client configured at
+        // all) — rather than a dead-end error, copy the report so nothing
+        // the user wrote is lost.
+        await Clipboard.setData(ClipboardData(text: body));
+        if (!mounted) return;
+        AppSnackBar.showError(context, s.bugReportNoMailApp);
       }
     } finally {
       if (mounted) setState(() => _sending = false);
     }
+  }
+
+  Future<void> _copyInstead() async {
+    final s = AppStrings.of(context);
+    if (!_validate(s)) return;
+    final body = await _buildReportBody(s);
+    await Clipboard.setData(ClipboardData(text: body));
+    if (!mounted) return;
+    AppSnackBar.showSuccess(context, s.bugReportCopied);
   }
 
   @override
@@ -116,6 +137,14 @@ class _BugReportScreenState extends ConsumerState<BugReportScreen> {
                     ? AppLoadingIndicator(size: 16, color: AppColors.of(context).onPrimary)
                     : const Icon(Icons.send, size: 18),
                 label: Text(s.bugReportSend),
+              ),
+            ),
+            const SizedBox(height: 10),
+            PressableScale(
+              child: TextButton.icon(
+                onPressed: _sending ? null : _copyInstead,
+                icon: const Icon(Icons.copy_outlined, size: 18),
+                label: Text(s.bugReportCopyInstead),
               ),
             ),
           ],

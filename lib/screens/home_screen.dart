@@ -161,7 +161,9 @@ class HomeScreen extends ConsumerWidget {
                       onRetry: () => ref.invalidate(babiesProvider),
                     ),
                   ),
-                  const BannerAdWidget(),
+                  const BannerAdWidget(
+                    androidAdUnitId: homeBannerAdUnitIdAndroid,
+                  ),
                 ],
               ),
             ),

@@ -581,6 +581,11 @@ class AppStrings {
   String get theirReaction => _t('Sa réaction', 'Their reaction', 'Su reacción');
   String get noteOptional =>
       _t('Note (optionnel)', 'Note (optional)', 'Nota (opcional)');
+  String get mealNoteOptional => _t(
+    'Note sur le repas (optionnel)',
+    'Note about the meal (optional)',
+    'Nota sobre la comida (opcional)',
+  );
   String saveWithCount(int count) => _t(
     'Enregistrer ($count)',
     'Save ($count)',
@@ -715,6 +720,24 @@ class AppStrings {
     'Describe el problema antes de enviar.',
   );
   String get bugReportSend => _t('Envoyer', 'Send', 'Enviar');
+  String get bugReportNoMailApp => _t(
+    'Aucune application email trouvée. Le texte a été copié — colle-le dans '
+        'un email à contact@nibblenibble.app.',
+    'No email app found. The text has been copied — paste it into an email '
+        'to contact@nibblenibble.app.',
+    'No se encontró ninguna aplicación de correo. El texto se ha copiado — '
+        'pégalo en un correo a contact@nibblenibble.app.',
+  );
+  String get bugReportCopyInstead => _t(
+    'Copier le texte à la place',
+    'Copy the text instead',
+    'Copiar el texto en su lugar',
+  );
+  String get bugReportCopied => _t(
+    'Copié — colle-le dans un email à contact@nibblenibble.app.',
+    'Copied — paste it into an email to contact@nibblenibble.app.',
+    'Copiado — pégalo en un correo a contact@nibblenibble.app.',
+  );
   String get deleteMyAccount => _t(
     'Supprimer mon compte',
     'Delete my account',
@@ -760,6 +783,13 @@ class AppStrings {
   String get babyProfile => _t('Profil bébé', 'Baby profile', 'Perfil del bebé');
   String get sex => _t('Sexe', 'Sex', 'Sexo');
   String get months => _t('mois', 'months', 'meses');
+  String get diversificationStartDateLabel => _t(
+    'Début de la diversification',
+    'Diversification start date',
+    'Inicio de la diversificación',
+  );
+  String get notSet => _t('Non défini', 'Not set', 'No definido');
+  String get clearDate => _t('Effacer', 'Clear', 'Borrar');
   String get profileUpdated =>
       _t('Profil mis à jour.', 'Profile updated.', 'Perfil actualizado.');
   String get profileUpdateFailed => _t(

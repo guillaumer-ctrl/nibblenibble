@@ -107,7 +107,17 @@ final selectedBabyProvider = Provider<BabyProfile?>((ref) {
   final babies = ref.watch(babiesProvider).value ?? [];
   final selectedId = ref.watch(selectedBabyIdProvider);
   if (babies.isEmpty) return null;
-  return babies.where((b) => b.id == selectedId).firstOrNull ?? babies.first;
+  // No explicit selection yet (very first launch) — default to the first
+  // baby. Once a specific id *has* been selected (e.g. right after
+  // creating a new baby), falling back to babies.first when that id isn't
+  // in the list yet used to silently show a *different* baby's data —
+  // babiesProvider's stream can lag a moment behind its own just-committed
+  // write (see AddBabyScreen._submit), so the freshly created baby's id
+  // briefly doesn't match anything here. Returning null instead lets
+  // screens fall back to their existing loading state until the stream
+  // catches up and this recomputes to the right baby.
+  if (selectedId == null) return babies.first;
+  return babies.where((b) => b.id == selectedId).firstOrNull;
 });
 
 final mealsForSelectedBabyProvider = StreamProvider<List<Meal>>((ref) {

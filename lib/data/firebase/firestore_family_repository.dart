@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../models/family_invitation.dart';
@@ -136,6 +138,23 @@ class FirestoreFamilyRepository implements FamilyRepository {
             final babyId = d.reference.parent.parent!.id;
             return _invitationFromDoc(d, babyId);
           }).toList(),
+        )
+        // The signed-in account can be deleted server-side (another device,
+        // or manual cleanup during testing) while this stream is still
+        // live; refreshing the ID token for the next query then throws
+        // (firebase_auth/unknown) instead of just closing the stream.
+        // Treat that like "no invitations" rather than let an auth error
+        // escape as an unhandled, fatal stream error (Crashlytics).
+        .transform(
+          StreamTransformer.fromHandlers(
+            handleError: (Object error, StackTrace stack, sink) {
+              if (error is FirebaseException) {
+                sink.add(const []);
+              } else {
+                sink.addError(error, stack);
+              }
+            },
+          ),
         );
   }
 

@@ -9,7 +9,9 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 import 'app.dart';
+import 'data/app_open_ad_manager.dart';
 import 'data/consent_service.dart';
+import 'data/interstitial_ad_manager.dart';
 import 'providers/locale_provider.dart';
 import 'providers/theme_mode_provider.dart';
 
@@ -60,6 +62,11 @@ Future<void> _run() async {
     // Mobile Ads SDK is initialized, so no ad is ever requested ahead of it.
     await ConsentService.instance.gatherConsent();
     await MobileAds.instance.initialize();
+    // Fire-and-forget: the app shouldn't wait on an ad network round-trip
+    // before showing its first screen. Not ready yet the very first time the
+    // user backgrounds/resumes the app is fine — it'll be ready for the next.
+    unawaited(AppOpenAdManager.instance.preload());
+    unawaited(InterstitialAdManager.instance.preload());
   }
   runApp(
     ProviderScope(

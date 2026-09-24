@@ -25,6 +25,7 @@ class BabyProfileScreen extends ConsumerStatefulWidget {
 class _BabyProfileScreenState extends ConsumerState<BabyProfileScreen> {
   late final TextEditingController _nameController;
   late DateTime _birthDate;
+  late DateTime? _diversificationStartDate;
   late BabyGender _gender;
   bool _saving = false;
 
@@ -33,6 +34,7 @@ class _BabyProfileScreenState extends ConsumerState<BabyProfileScreen> {
     super.initState();
     _nameController = TextEditingController(text: widget.baby.name);
     _birthDate = widget.baby.birthDate;
+    _diversificationStartDate = widget.baby.diversificationStartDate;
     _gender = widget.baby.gender;
   }
 
@@ -55,6 +57,21 @@ class _BabyProfileScreenState extends ConsumerState<BabyProfileScreen> {
     if (picked != null) setState(() => _birthDate = picked);
   }
 
+  Future<void> _pickDiversificationStartDate() async {
+    final now = DateTime.now();
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _diversificationStartDate ?? now,
+      firstDate: DateTime(now.year - 5),
+      lastDate: now,
+      locale: AppStrings.of(context).datePickerLocale,
+      initialEntryMode: DatePickerEntryMode.calendarOnly,
+    );
+    if (picked != null) {
+      setState(() => _diversificationStartDate = picked);
+    }
+  }
+
   Future<void> _save() async {
     final canEdit = ref.read(isCurrentUserAdminProvider);
     if (!canEdit) return;
@@ -67,7 +84,7 @@ class _BabyProfileScreenState extends ConsumerState<BabyProfileScreen> {
               id: widget.baby.id,
               name: _nameController.text.trim(),
               birthDate: _birthDate,
-              diversificationStartDate: widget.baby.diversificationStartDate,
+              diversificationStartDate: _diversificationStartDate,
               gender: _gender,
             ),
           );
@@ -177,6 +194,31 @@ class _BabyProfileScreenState extends ConsumerState<BabyProfileScreen> {
               ),
             ),
             const SizedBox(height: 14),
+            InkWell(
+              onTap: canEdit ? _pickDiversificationStartDate : null,
+              child: InputDecorator(
+                decoration: InputDecoration(
+                  labelText: s.diversificationStartDateLabel,
+                  suffixIcon: canEdit && _diversificationStartDate != null
+                      ? IconButton(
+                          icon: const Icon(Icons.close, size: 18),
+                          tooltip: s.clearDate,
+                          onPressed: () =>
+                              setState(() => _diversificationStartDate = null),
+                        )
+                      : null,
+                ),
+                child: Text(
+                  _diversificationStartDate == null
+                      ? s.notSet
+                      : DateFormat(
+                          s.dateOnlyPattern,
+                          s.intlLocale,
+                        ).format(_diversificationStartDate!),
+                ),
+              ),
+            ),
+            const SizedBox(height: 14),
             Text(
               s.sex,
               style: Theme.of(context).textTheme.bodyMedium
@@ -215,28 +257,6 @@ class _BabyProfileScreenState extends ConsumerState<BabyProfileScreen> {
                 );
               }).toList(),
             ),
-            const SizedBox(height: 24),
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: AppColors.of(context).card,
-                borderRadius: BorderRadius.circular(AppRadius.card),
-                border: Border.all(color: AppColors.of(context).line),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  _InfoStat(
-                    value: '${widget.baby.ageInMonths}',
-                    label: s.months,
-                  ),
-                  _InfoStat(
-                    value: widget.baby.diversificationDays?.toString() ?? '—',
-                    label: s.diversificationDaysLabel,
-                  ),
-                ],
-              ),
-            ),
             if (canEdit) ...[
               const SizedBox(height: 24),
               PressableScale(
@@ -263,30 +283,6 @@ class _BabyProfileScreenState extends ConsumerState<BabyProfileScreen> {
           ],
         ),
       ),
-    );
-  }
-}
-
-class _InfoStat extends StatelessWidget {
-  const _InfoStat({required this.value, required this.label});
-
-  final String value;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          value,
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.w700,
-            color: AppColors.of(context).primary,
-          ),
-        ),
-        const SizedBox(height: 2),
-        Text(label, textAlign: TextAlign.center),
-      ],
     );
   }
 }

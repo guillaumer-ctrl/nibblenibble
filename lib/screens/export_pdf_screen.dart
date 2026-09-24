@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -5,6 +7,7 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
+import '../data/interstitial_ad_manager.dart';
 import '../l10n/app_strings.dart';
 import '../models/baby_profile.dart';
 import '../models/food.dart';
@@ -141,6 +144,10 @@ class _ExportPdfScreenState extends ConsumerState<ExportPdfScreen> {
           name:
               'nibblenibble-${_slugify(baby.name)}-${DateFormat('yyyy-MM-dd').format(DateTime.now())}.pdf',
         );
+        // A natural transition point — the export flow just closed — and
+        // never shown on failure (see the catch below). Capped at once per
+        // session inside the manager itself.
+        unawaited(InterstitialAdManager.instance.showIfAvailable());
       } catch (_) {
         if (mounted) {
           AppSnackBar.showError(context, s.generatePdfFailed);

@@ -9,6 +9,7 @@ import '../theme/app_theme.dart';
 import '../utils/meal_stats.dart';
 import '../widgets/animated_accordion.dart';
 import '../widgets/app_loading_indicator.dart';
+import '../widgets/banner_ad_widget.dart';
 import '../widgets/error_retry_view.dart';
 import '../widgets/reaction_face_icon.dart';
 
@@ -260,6 +261,10 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
                         })
                         .toList();
                   }(),
+                const SizedBox(height: 8),
+                const BannerAdWidget(
+                  androidAdUnitId: statsBannerAdUnitIdAndroid,
+                ),
               ],
             );
           },

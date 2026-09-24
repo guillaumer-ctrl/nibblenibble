@@ -18,7 +18,7 @@ class _BabyCreatedScreenState extends State<BabyCreatedScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(milliseconds: 2200), () {
+    Future.delayed(const Duration(milliseconds: 2600), () {
       if (!mounted) return;
       Navigator.of(context).popUntil((route) => route.isFirst);
     });

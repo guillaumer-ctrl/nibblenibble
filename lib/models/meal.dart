@@ -30,6 +30,7 @@ class Meal {
     required this.dateTime,
     required this.foods,
     this.loggedByMemberId,
+    this.note,
   });
 
   final String id;
@@ -39,6 +40,10 @@ class Meal {
 
   /// Which family member logged/edited this meal, for accountability.
   final String? loggedByMemberId;
+
+  /// Optional note about the meal as a whole, distinct from each food's own
+  /// [MealFoodEntry.note] (e.g. "a bien mangé mais était fatigué").
+  final String? note;
 
   bool get isPast => dateTime.isBefore(DateTime.now());
 }

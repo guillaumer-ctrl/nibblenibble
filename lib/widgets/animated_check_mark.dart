@@ -32,7 +32,7 @@ class _AnimatedCheckMarkState extends State<AnimatedCheckMark>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 600),
+      duration: const Duration(milliseconds: 950),
     );
     _scale = CurvedAnimation(
       parent: _controller,

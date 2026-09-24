@@ -96,18 +96,20 @@ class AppColorsX extends ThemeExtension<AppColorsX> {
     primaryDark: Color(0xFF332759),
     primaryLight: Color(0xFFE7E2F7),
     onPrimary: Colors.white,
-    sage: Color(0xFF6B8F66),
-    sageDark: Color(0xFF4C6B48),
-    sageLight: Color(0xFFE4EDE1),
-    sageBorder: Color(0xFFD7E6D3),
-    amber: Color(0xFFC08A2E),
-    amberDark: Color(0xFF785A19),
-    amberLight: Color(0xFFF5E9D2),
-    onAmber: Colors.white,
-    red: Color(0xFFD64545),
-    redDark: Color(0xFFB23A3A),
-    redLight: Color(0xFFFBE4E1),
-    redBorder: Color(0xFFF0C7C1),
+    sage: Color(0xFF339957),
+    sageDark: Color(0xFF206A38),
+    sageLight: Color(0xFFD9F2DE),
+    sageBorder: Color(0xFFA9DDB8),
+    amber: Color(0xFFDE9E1E),
+    amberDark: Color(0xFF7A5600),
+    amberLight: Color(0xFFFCEAB8),
+    // amber is bright/saturated — white text loses contrast on it, unlike
+    // the old muted gold. Dark ink reads clearly instead.
+    onAmber: Color(0xFF2E2620),
+    red: Color(0xFFD93A3A),
+    redDark: Color(0xFFA81E1E),
+    redLight: Color(0xFFFBDADA),
+    redBorder: Color(0xFFF2AFAF),
     ink: Color(0xFF2E2620),
     inkSoft: Color(0xFF7C6F5E),
     inkVerySoft: Color(0xFFB3A692),
@@ -125,16 +127,19 @@ class AppColorsX extends ThemeExtension<AppColorsX> {
     primaryDark: Color(0xFFB3A2F2),
     primaryLight: Color(0xFF3A3555),
     onPrimary: Color(0xFF241B47),
-    sage: Color(0xFF6BE3A6),
-    sageDark: Color(0xFF6BE3A6),
+    // Same vivid reaction colors as the light theme (not a dark-mode-muted
+    // variant) — requested so "aimé/mitigé/pas aimé" reads identically in
+    // both themes.
+    sage: Color(0xFF339957),
+    sageDark: Color(0xFF206A38),
     sageLight: Color(0xFF1F3327),
     sageBorder: Color(0xFF2C4A3A),
-    amber: Color(0xFFFFB46B),
-    amberDark: Color(0xFFFFD199),
+    amber: Color(0xFFDE9E1E),
+    amberDark: Color(0xFF7A5600),
     amberLight: Color(0xFF3A2E14),
     onAmber: Color(0xFF1E1B2E),
-    red: Color(0xFFF3B3B5),
-    redDark: Color(0xFFF3B3B5),
+    red: Color(0xFFD93A3A),
+    redDark: Color(0xFFA81E1E),
     redLight: Color(0xFF3A1F1F),
     redBorder: Color(0xFF4A2A2A),
     ink: Color(0xFFF3F1F8),
@@ -475,7 +480,15 @@ class AppTheme {
       ),
       chipTheme: base.chipTheme.copyWith(
         backgroundColor: colors.primaryLight,
-        labelStyle: TextStyle(color: colors.primaryDark),
+        // In dark mode these chips are mostly the reaction-colored food
+        // chips in Stats — sage/amber/red backgrounds, all fairly dark
+        // tones there, so plain white reads better than the lavender
+        // primaryDark text used in light mode.
+        labelStyle: TextStyle(
+          color: brightness == Brightness.dark
+              ? Colors.white
+              : colors.primaryDark,
+        ),
         side: BorderSide(color: colors.line),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.card),

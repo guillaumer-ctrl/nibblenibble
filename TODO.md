@@ -4,7 +4,9 @@ Liste vivante : dis-moi quoi ajouter/cocher/supprimer et je la tiens à jour.
 
 ## Bloquant (Play Store)
 - [ ] Formulaire "Data safety" (Play Console) — à faire par toi (compte Play Console)
-- [ ] Fiche Play Store (description, captures d'écran, classification) — à faire par toi
+- [x] Captures d'écran de la fiche Play Store — 15 visuels (5 écrans × FR/EN/ES, 810×1440, téléphone + titre) dans `graphics/marketing/`
+- [ ] Description courte (80 car.) et longue (4000 car.) de la fiche Play Store, en FR/EN/ES — à rédiger
+- [ ] Classification du contenu + fiche Play Store (upload description/captures, Data safety, Ads) — à faire par toi dans Play Console
 - [ ] `contact@nibblenibble.app` : les emails arrivent bien mais partent en spam (réputation de domaine neuf) — marqué "non spam" + DMARC ajouté, à revérifier dans quelques jours que ça se stabilise
 
 ## Qualité / robustesse
@@ -26,6 +28,15 @@ Liste vivante : dis-moi quoi ajouter/cocher/supprimer et je la tiens à jour.
 - [ ] Fiche App Store Connect (description, captures d'écran, classification)
 
 ## Fait récemment
+- [x] Publicités AdMob en place avec de vrais IDs : bannières (Accueil/Stats), App Open, Interstitiel (export PDF)
+- [x] Feature graphics Play Store (1024×500) en FR/EN/ES, flatten 24-bit RGB (pas d'alpha)
+- [x] 15 visuels marketing pour la fiche Play/App Store (5 écrans × FR/EN/ES) — `graphics/marketing/`
+- [x] Champ "Date de début de diversification" rendu éditable (avec bouton effacer) sur le profil bébé — corrige les cas où la date déduite automatiquement était fausse
+- [x] Âge en mois et nombre de jours de diversification retirés de l'écran profil bébé (redondants avec l'Accueil/Stats)
+- [x] Note sur le repas entier (en plus de la note par aliment) — champ "Note sur le repas (optionnel)" dans le formulaire d'ajout/modif
+- [x] Corrigé : la liste d'aliments dans "Ajouter un repas" gardait toujours l'ordre alphabétique français, peu importe la langue de l'app — trie maintenant sur le nom affiché dans la langue active
+- [x] Corrigé : un premier repas loggé comme "à venir" pouvait mettre la date de diversification dans le futur (jours négatifs) — ne considère plus que les repas passés
+- [x] Vitesse des animations de célébration (création compte/bébé) ralentie (600ms → 950ms, délai auto-avance 2200ms → 2600ms)
 - [x] Audit pré-lancement : minification/obfuscation R8 réactivées en release (le bug WorkManager qui forçait à les désactiver venait de `flutter_local_notifications`, retiré avec la fonctionnalité notifications) + `proguard-rules.pro` ajouté
 - [x] Audit pré-lancement : flux `watchMeals` plafonné à 400 repas (le plus récents) pour borner le coût Firestore/mémoire sur la durée
 - [x] Audit pré-lancement : landing page (`index.html`) supprimée + CGU/politique de confidentialité nettoyées des mentions de fonctionnalités retirées (notifications, export CSV)

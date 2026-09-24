@@ -40,6 +40,7 @@ class _MealFormScreenState extends ConsumerState<MealFormScreen> {
   final List<String> _selectedFoodIds = [];
   final Map<String, Reaction> _reactions = {};
   final Map<String, TextEditingController> _noteControllers = {};
+  final _mealNoteController = TextEditingController();
   final _searchController = TextEditingController();
   String _search = '';
   bool _saving = false;
@@ -59,6 +60,9 @@ class _MealFormScreenState extends ConsumerState<MealFormScreen> {
     final existing = widget.existingMeal;
     _dateTime = existing?.dateTime ?? DateTime.now();
     _dateTimeChosen = existing != null;
+    if ((existing?.note ?? '').isNotEmpty) {
+      _mealNoteController.text = existing!.note!;
+    }
     if (existing != null) {
       // A food only ever has one current reaction: if this meal itself
       // didn't record one for a food, fall back to whatever was last
@@ -81,6 +85,7 @@ class _MealFormScreenState extends ConsumerState<MealFormScreen> {
     for (final c in _noteControllers.values) {
       c.dispose();
     }
+    _mealNoteController.dispose();
     _searchController.dispose();
     super.dispose();
   }
@@ -207,6 +212,7 @@ class _MealFormScreenState extends ConsumerState<MealFormScreen> {
           .toList();
       final repo = ref.read(mealRepositoryProvider);
       final loggedByMemberId = ref.read(currentMemberIdProvider);
+      final mealNote = _mealNoteController.text.trim();
       if (_isEditing) {
         await repo.updateMeal(
           Meal(
@@ -215,6 +221,7 @@ class _MealFormScreenState extends ConsumerState<MealFormScreen> {
             dateTime: _dateTime,
             foods: foods,
             loggedByMemberId: loggedByMemberId,
+            note: mealNote.isEmpty ? null : mealNote,
           ),
         );
       } else {
@@ -225,6 +232,7 @@ class _MealFormScreenState extends ConsumerState<MealFormScreen> {
             dateTime: _dateTime,
             foods: foods,
             loggedByMemberId: loggedByMemberId,
+            note: mealNote.isEmpty ? null : mealNote,
           ),
         );
       }
@@ -253,14 +261,24 @@ class _MealFormScreenState extends ConsumerState<MealFormScreen> {
   /// moment: takes the earliest date across this meal and whatever's
   /// already loaded, so a backdated first entry or pre-existing meals from
   /// before this fix both correct it.
+  ///
+  /// Only ever considers *past* meals — a brand-new baby whose very first
+  /// logged entry is a planned/upcoming meal (dateTime in the future) used
+  /// to set the start date to that future date, making
+  /// [BabyProfile.diversificationDays] come out negative until that date
+  /// arrived. Diversification hasn't started until a meal has actually
+  /// happened.
   Future<void> _maybeSetDiversificationStart() async {
     final baby = ref.read(selectedBabyProvider);
     if (baby == null || baby.diversificationStartDate != null) return;
     final meals = ref.read(mealsForSelectedBabyProvider).value ?? const [];
-    final earliest = [
+    final now = DateTime.now();
+    final pastDates = [
       _dateTime,
       ...meals.map((m) => m.dateTime),
-    ].reduce((a, b) => a.isBefore(b) ? a : b);
+    ].where((d) => d.isBefore(now)).toList();
+    if (pastDates.isEmpty) return;
+    final earliest = pastDates.reduce((a, b) => a.isBefore(b) ? a : b);
     await ref
         .read(babyRepositoryProvider)
         .updateBaby(
@@ -352,6 +370,18 @@ class _MealFormScreenState extends ConsumerState<MealFormScreen> {
                   if (canEdit) ...[
                     const SizedBox(height: 12),
                     TextField(
+                      controller: _mealNoteController,
+                      enabled: _dateTimeChosen,
+                      decoration: InputDecoration(
+                        labelText: s.mealNoteOptional,
+                        isDense: true,
+                      ),
+                      textCapitalization: TextCapitalization.sentences,
+                      minLines: 1,
+                      maxLines: 3,
+                    ),
+                    const SizedBox(height: 12),
+                    TextField(
                       controller: _searchController,
                       enabled: _dateTimeChosen,
                       decoration: InputDecoration(
@@ -390,13 +420,26 @@ class _MealFormScreenState extends ConsumerState<MealFormScreen> {
                   final allFoods = ref.watch(allFoodsProvider);
                   final lastReactions = ref.watch(foodReactionsProvider);
                   final usageCounts = ref.watch(foodUsageCountsProvider);
-                  final filtered = allFoods
-                      .where(
-                        (f) =>
-                            foldDiacritics(f.displayName(context).toLowerCase())
-                                .contains(_search),
-                      )
-                      .toList();
+                  final filtered =
+                      allFoods
+                          .where(
+                            (f) => foldDiacritics(
+                              f.displayName(context).toLowerCase(),
+                            ).contains(_search),
+                          )
+                          .toList()
+                        // Foods come back from Firestore in whatever order
+                        // the shared import assigned (effectively French
+                        // alphabetical) — re-sort by the name actually shown
+                        // in the current language, not the underlying French
+                        // one.
+                        ..sort(
+                          (a, b) => foldDiacritics(
+                            a.displayName(context).toLowerCase(),
+                          ).compareTo(
+                            foldDiacritics(b.displayName(context).toLowerCase()),
+                          ),
+                        );
                   // Read-only: only the already-selected foods, nothing to
                   // add — the full searchable list would offer a toggle
                   // they're not allowed to use.

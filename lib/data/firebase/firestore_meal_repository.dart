@@ -32,6 +32,7 @@ Meal _fromDoc(DocumentSnapshot<Map<String, dynamic>> doc, String babyId) {
     babyId: babyId,
     dateTime: (data['dateTime'] as Timestamp).toDate(),
     loggedByMemberId: data['loggedByMemberId'] as String?,
+    note: data['note'] as String?,
     foods: (data['foods'] as List<dynamic>? ?? const [])
         .map((e) => _entryFromMap(Map<String, dynamic>.from(e as Map)))
         .toList(),
@@ -66,6 +67,7 @@ class FirestoreMealRepository implements MealRepository {
     final ref = await _mealsOf(meal.babyId).add({
       'dateTime': Timestamp.fromDate(meal.dateTime),
       'loggedByMemberId': meal.loggedByMemberId,
+      'note': meal.note,
       'foods': meal.foods.map(_entryToMap).toList(),
     });
     return ref.id;
@@ -76,6 +78,7 @@ class FirestoreMealRepository implements MealRepository {
     await _mealsOf(meal.babyId).doc(meal.id).update({
       'dateTime': Timestamp.fromDate(meal.dateTime),
       'loggedByMemberId': meal.loggedByMemberId,
+      'note': meal.note,
       'foods': meal.foods.map(_entryToMap).toList(),
     });
   }
