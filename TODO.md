@@ -5,7 +5,7 @@ Liste vivante : dis-moi quoi ajouter/cocher/supprimer et je la tiens à jour.
 ## Bloquant (Play Store)
 - [ ] Formulaire "Data safety" (Play Console) — à faire par toi (compte Play Console)
 - [x] Captures d'écran de la fiche Play Store — 15 visuels (5 écrans × FR/EN/ES, 810×1440, téléphone + titre) dans `graphics/marketing/`
-- [ ] Description courte (80 car.) et longue (4000 car.) de la fiche Play Store, en FR/EN/ES — à rédiger
+- [x] Description courte (80 car.) et longue (4000 car.) de la fiche Play Store, en FR/EN/ES — `graphics/store-listing.md`
 - [ ] Classification du contenu + fiche Play Store (upload description/captures, Data safety, Ads) — à faire par toi dans Play Console
 - [ ] `contact@nibblenibble.app` : les emails arrivent bien mais partent en spam (réputation de domaine neuf) — marqué "non spam" + DMARC ajouté, à revérifier dans quelques jours que ça se stabilise
 
