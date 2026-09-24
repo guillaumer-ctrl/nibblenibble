@@ -96,18 +96,14 @@ Tu peux aussi introduire une réclamation auprès de la CNIL (Commission Nationa
 
 Le bébé suivi dans l'app n'est **pas** l'utilisateur du service — l'app est conçue pour être utilisée par un adulte (parent, tuteur ou proche autorisé) qui saisit et contrôle les données de l'enfant. Nous ne collectons aucune donnée directement auprès d'un enfant, et l'app n'est pas destinée à être utilisée directement par des mineurs.
 
-## 10. Notifications
-
-Les rappels de repas et résumés hebdomadaires sont des notifications **locales**, générées et gérées entièrement sur ton appareil — aucune donnée n'est envoyée à un serveur pour déclencher ces notifications.
-
-## 11. Sécurité
+## 10. Sécurité
 
 Les données sont protégées par les règles de sécurité de Firebase : seuls les membres explicitement autorisés d'un profil bébé peuvent voir ou modifier ses données. Les mots de passe ne sont jamais stockés en clair (gérés par Firebase Authentication).
 
-## 12. Modifications de cette politique
+## 11. Modifications de cette politique
 
 Cette politique peut évoluer avec l'app. En cas de changement important, nous t'en informerons via l'app ou par email.
 
-## 13. Contact
+## 12. Contact
 
 Pour toute question sur cette politique ou tes données : **contact@nibblenibble.app**

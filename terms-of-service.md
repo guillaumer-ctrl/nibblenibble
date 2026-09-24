@@ -15,7 +15,6 @@ nibblenibble permet aux familles de :
 - Enregistrer les repas, aliments essayés et réactions du bébé
 - Partager ce suivi avec d'autres membres de la famille via un système d'invitation
 - Consulter des statistiques et exporter un récapitulatif en PDF
-- Recevoir des rappels et résumés via des notifications locales
 
 **L'Application n'est pas un dispositif médical et ne fournit aucun avis, diagnostic ou conseil médical.** Les informations qu'elle affiche (statistiques, réactions, etc.) sont un outil de suivi personnel, pas une recommandation de santé. Pour toute question relative à l'alimentation ou à la santé de ton enfant, consulte un professionnel de santé (pédiatre, médecin).
 
