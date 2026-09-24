@@ -1,0 +1,200 @@
+# Règles Firestore — nibblenibble
+
+À copier-coller intégralement dans Firebase Console → Firestore Database → onglet **Règles** → **Publier**.
+
+```
+rules_version = '2';
+
+// Schéma Firestore attendu par ces règles :
+//
+// /users/{uid}                                  { email, displayName, babyIds: [...] }
+// /babies/{babyId}                               { name, birthDate, diversificationStartDate, createdBy, createdAt }
+// /babies/{babyId}/members/{uid}                 { name, email, role: 'admin' | 'readOnly', joinedAt }
+// /babies/{babyId}/invitations/{email}            { email, role, status, invitedAt } — doc id est l'email invité lui-même
+// /babies/{babyId}/meals/{mealId}                 { babyId, dateTime, foods: [...], loggedByMemberId }
+// /babies/{babyId}/notes/{noteId}                 { text, authorName, updatedAt } — historique, append-only
+// /babies/{babyId}/customFoods/{foodId}           { name, category, createdAt } — aliments ajoutés par cette famille
+// /foods/{foodId}                                 base d'aliments partagée, lecture seule côté client
+//
+// Politique produit : l'admin qui invite choisit le rôle ("readOnly" ou
+// "admin") au moment de l'invitation ; seuls les admins créent/modifient/
+// suppriment les repas et gèrent la famille. Pas de Cloud Functions (compte
+// Spark) : tout est appliqué ici.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isMember(babyId) {
+      return isSignedIn() &&
+        exists(/databases/$(database)/documents/babies/$(babyId)/members/$(request.auth.uid));
+    }
+
+    function memberRole(babyId) {
+      return get(/databases/$(database)/documents/babies/$(babyId)/members/$(request.auth.uid)).data.role;
+    }
+
+    function isAdmin(babyId) {
+      return isMember(babyId) && memberRole(babyId) == 'admin';
+    }
+
+    // --- /users/{uid} --------------------------------------------------
+    // Uniquement le propriétaire peut lire/écrire son propre profil.
+    match /users/{uid} {
+      allow read, write: if isSignedIn() && request.auth.uid == uid;
+    }
+
+    // --- /foods/{foodId} -------------------------------------------------
+    // Base d'aliments partagée : lecture pour tout utilisateur connecté,
+    // aucune écriture cliente (import géré via la console / Admin SDK).
+    match /foods/{foodId} {
+      allow read: if isSignedIn();
+      allow write: if false;
+    }
+
+    // --- /babies/{babyId} ------------------------------------------------
+    match /babies/{babyId} {
+      allow read: if isMember(babyId);
+      // N'importe quel utilisateur connecté peut créer un profil bébé ;
+      // il doit dans la foulée créer son propre document `members/{uid}`
+      // avec role: 'admin' (vérifié ci-dessous via createdBy).
+      allow create: if isSignedIn() && request.resource.data.createdBy == request.auth.uid;
+      allow update, delete: if isAdmin(babyId);
+
+      // --- /babies/{babyId}/members/{uid} ---------------------------------
+      match /members/{uid} {
+        allow read: if isMember(babyId);
+
+        allow create: if isSignedIn() && (
+          // Cas 1 : le créateur du bébé s'auto-désigne admin, seulement
+          // juste après la création du bébé (createdBy doit correspondre).
+          (
+            uid == request.auth.uid &&
+            request.resource.data.role == 'admin' &&
+            get(/databases/$(database)/documents/babies/$(babyId)).data.createdBy == request.auth.uid
+          ) ||
+          // Cas 2 : un admin ajoute/complète un membre (ex. suite à une invitation).
+          isAdmin(babyId) ||
+          // Cas 3 : un invité s'ajoute lui-même, avec le rôle exact fixé par
+          // l'invitation (lecture seule ou admin, selon ce que l'admin a
+          // choisi en invitant) — seulement s'il existe une invitation *en
+          // attente* à son adresse. Le doc d'invitation est stocké sous
+          // l'id = email pour que ce get() exact soit possible (une requête
+          // ne suffirait pas ici).
+          (
+            uid == request.auth.uid &&
+            request.auth.token.email != null &&
+            exists(/databases/$(database)/documents/babies/$(babyId)/invitations/$(request.auth.token.email)) &&
+            get(/databases/$(database)/documents/babies/$(babyId)/invitations/$(request.auth.token.email)).data.status == 'pending' &&
+            request.resource.data.role == get(/databases/$(database)/documents/babies/$(babyId)/invitations/$(request.auth.token.email)).data.role
+          )
+        );
+
+        // Un admin peut tout modifier ; un membre ne peut modifier que ses
+        // propres champs non sensibles (pas son propre rôle).
+        allow update: if isAdmin(babyId) || (
+          uid == request.auth.uid &&
+          !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role'])
+        );
+
+        // Un admin peut retirer n'importe qui ; chacun peut quitter de lui-même.
+        allow delete: if isAdmin(babyId) || uid == request.auth.uid;
+      }
+
+      // --- /babies/{babyId}/invitations/{invitationId} --------------------
+      match /invitations/{invitationId} {
+        // Un admin voit toutes les invitations du bébé ; un invité peut
+        // retrouver les siennes (recherche par email, y compris via une
+        // requête collectionGroup côté client).
+        //
+        // Deux "allow read" séparés, PAS un seul avec ||: pour une requête
+        // (list/collectionGroup), Firestore doit prouver la sûreté en ne
+        // regardant que les filtres de la requête elle-même — il ne peut pas
+        // évaluer un get()/exists() par document potentiel. babyId est fixe
+        // pour la requête scopée de l'admin (isAdmin(babyId) se prouve une
+        // fois), mais varie par document pour la requête collectionGroup de
+        // l'invité — si cette branche get()-dépendante est OR-ée avec la
+        // branche email, Firestore ne peut plus prouver NI l'une NI l'autre
+        // et refuse toute la requête (permission-denied, même quand aucun
+        // document ne serait de toute façon renvoyé). Séparer les deux
+        // permet à la branche email seule (sans get()) de suffire pour la
+        // requête collectionGroup.
+        allow read: if isAdmin(babyId);
+        allow read: if isSignedIn() && resource.data.email == request.auth.token.email;
+
+        allow create: if isAdmin(babyId) &&
+          request.resource.data.role in ['readOnly', 'admin'];
+        allow delete: if isAdmin(babyId);
+
+        // Seul changement autorisé côté invité : passer son invitation à
+        // 'accepted' ou 'declined' (rien d'autre ne doit bouger).
+        allow update: if isAdmin(babyId) || (
+          isSignedIn() &&
+          resource.data.email == request.auth.token.email &&
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status']) &&
+          request.resource.data.status in ['accepted', 'declined']
+        );
+      }
+
+      // --- /babies/{babyId}/meals/{mealId} ---------------------------------
+      match /meals/{mealId} {
+        allow read: if isMember(babyId);
+        allow create, delete: if isAdmin(babyId);
+
+        // Un admin peut tout modifier. Un lecteur (readOnly) ne peut ni créer
+        // ni supprimer un repas, ni changer sa date ou la liste d'aliments —
+        // seulement renseigner la réaction/note du bébé sur les aliments déjà
+        // choisis (la seule action que l'UI lui propose). `foods` est un seul
+        // champ (tableau de maps), donc diff().affectedKeys() ne distingue
+        // pas "réaction changée" de "aliment ajouté/retiré" : on vérifie en
+        // plus que la date et le nombre d'aliments ne bougent pas.
+        //
+        // Limite connue et acceptée : on ne vérifie PAS que le `foodId` à
+        // chaque index du tableau reste identique (seule sa taille est
+        // comparée) — les règles Firestore n'ont pas de boucle/diff élément
+        // par élément sur un tableau de maps sans Cloud Function. Un client
+        // lecture-seule fabriqué à la main pourrait donc en théorie
+        // substituer un aliment plutôt que juste sa réaction. Inexploitable
+        // via l'UI normale de l'app ; nécessiterait une Cloud Function
+        // (plan Blaze) pour être corrigé proprement.
+        allow update: if isAdmin(babyId) || (
+          isMember(babyId) &&
+          request.resource.data.dateTime == resource.data.dateTime &&
+          request.resource.data.foods.size() == resource.data.foods.size() &&
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['foods'])
+        );
+      }
+
+      // --- /babies/{babyId}/notes/{noteId} ---------------------------------
+      // Append-only history: writing a note never edits an old one, it adds
+      // a new entry (the most recent is "the" current note).
+      match /notes/{noteId} {
+        allow read: if isMember(babyId);
+        allow create: if isAdmin(babyId);
+        allow update, delete: if false;
+      }
+
+      // --- /babies/{babyId}/customFoods/{foodId} ---------------------------
+      // A food this family added because it wasn't in the shared /foods
+      // database — scoped to this baby only (never merged into the shared
+      // collection, so one family's additions can't pollute another's).
+      match /customFoods/{foodId} {
+        allow read: if isMember(babyId);
+        allow create, update, delete: if isAdmin(babyId);
+      }
+    }
+  }
+}
+```
+
+## Comment publier
+
+1. [console.firebase.google.com](https://console.firebase.google.com) → votre projet.
+2. **Firestore Database** (menu de gauche) → onglet **Règles**.
+3. Sélectionnez tout le contenu de l'éditeur et remplacez-le par le bloc ci-dessus.
+4. Cliquez sur **Publier**.
+
+C'est probablement pour ça que "Invitations reçues" affiche une erreur : la requête `email == ... AND status == pending` sur `invitations` est refusée avec `PERMISSION_DENIED`, ce qui indique que les règles actuellement en ligne sur Firebase ne correspondent pas (ou plus) à ce fichier.

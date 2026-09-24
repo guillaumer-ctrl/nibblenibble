@@ -1,0 +1,73 @@
+import 'dart:async';
+
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:intl/date_symbol_data_local.dart';
+
+import 'app.dart';
+import 'data/consent_service.dart';
+import 'providers/locale_provider.dart';
+import 'providers/theme_mode_provider.dart';
+
+Future<void> main() async {
+  // runZonedGuarded so an error escaping the widget tree (not caught by
+  // FlutterError.onError, e.g. inside a Future not awaited by any widget)
+  // still reaches Crashlytics instead of just being lost to the console.
+  runZonedGuarded(_run, (error, stack) {
+    if (!kIsWeb) {
+      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+    }
+  });
+}
+
+Future<void> _run() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting('fr_FR');
+  await initializeDateFormatting('en_US');
+  // Read before runApp so there's no flash of the default (French) locale
+  // before the saved preference loads.
+  final savedLocale = await loadSavedLocale();
+  final savedThemeMode = await loadSavedThemeMode();
+  // Web isn't registered as a Firebase app yet (only Android, via
+  // google-services.json) — skip so `flutter run -d chrome` still works
+  // for quick UI previews. Crashlytics itself doesn't support web either.
+  if (!kIsWeb) {
+    await Firebase.initializeApp();
+    FlutterError.onError = (details) {
+      // Flutter's "A RenderFlex overflowed" debug banner is reported
+      // through FlutterError.onError like a real error, but the code that
+      // paints it only runs inside an assert — i.e. never in a release
+      // build. Recording it as fatal misrepresented Crashlytics' crash-free
+      // rate with something the app can't actually crash on in production;
+      // it's still worth fixing as a layout bug, just not as a fatal.
+      if (details.exception.toString().startsWith(
+        'A RenderFlex overflowed',
+      )) {
+        FirebaseCrashlytics.instance.recordFlutterError(details);
+        return;
+      }
+      FirebaseCrashlytics.instance.recordFlutterFatalError(details);
+    };
+    PlatformDispatcher.instance.onError = (error, stack) {
+      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+      return true;
+    };
+    // RGPD/UMP: must gather (or confirm not required) consent before the
+    // Mobile Ads SDK is initialized, so no ad is ever requested ahead of it.
+    await ConsentService.instance.gatherConsent();
+    await MobileAds.instance.initialize();
+  }
+  runApp(
+    ProviderScope(
+      overrides: [
+        localeProvider.overrideWith((ref) => savedLocale),
+        themeModeProvider.overrideWith((ref) => savedThemeMode),
+      ],
+      child: const NibbleNibbleApp(),
+    ),
+  );
+}
