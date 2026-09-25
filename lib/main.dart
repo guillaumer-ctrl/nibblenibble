@@ -58,15 +58,15 @@ Future<void> _run() async {
       FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
       return true;
     };
-    // RGPD/UMP: must gather (or confirm not required) consent before the
-    // Mobile Ads SDK is initialized, so no ad is ever requested ahead of it.
-    await ConsentService.instance.gatherConsent();
-    await MobileAds.instance.initialize();
-    // Fire-and-forget: the app shouldn't wait on an ad network round-trip
-    // before showing its first screen. Not ready yet the very first time the
-    // user backgrounds/resumes the app is fine — it'll be ready for the next.
-    unawaited(AppOpenAdManager.instance.preload());
-    unawaited(InterstitialAdManager.instance.preload());
+    // Consent gathering and Ads SDK init both involve a network round-trip
+    // (UMP consent check, ad SDK init) — awaiting them here would hold the
+    // native splash screen up for however long that takes (seconds, on a
+    // slow connection). Nothing about showing the app depends on them:
+    // BannerAdWidget/AppOpenAdManager/InterstitialAdManager all already
+    // check ConsentService.canRequestAds before requesting an ad, so it's
+    // safe to resolve consent and init Ads in the background after the
+    // first frame instead of blocking startup on it.
+    unawaited(_initAdsInBackground());
   }
   runApp(
     ProviderScope(
@@ -77,4 +77,15 @@ Future<void> _run() async {
       child: const NibbleNibbleApp(),
     ),
   );
+}
+
+Future<void> _initAdsInBackground() async {
+  // RGPD/UMP: must gather (or confirm not required) consent before the
+  // Mobile Ads SDK is initialized, so no ad is ever requested ahead of it.
+  await ConsentService.instance.gatherConsent();
+  await MobileAds.instance.initialize();
+  // Not ready yet the very first time the user backgrounds/resumes the app
+  // is fine — it'll be ready for the next.
+  unawaited(AppOpenAdManager.instance.preload());
+  unawaited(InterstitialAdManager.instance.preload());
 }

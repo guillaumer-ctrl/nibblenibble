@@ -10,7 +10,6 @@ import 'screens/root_shell.dart';
 import 'theme/app_theme.dart';
 import 'widgets/app_loading_indicator.dart';
 import 'widgets/error_retry_view.dart';
-import 'widgets/nibble_wordmark.dart';
 import 'widgets/offline_banner.dart';
 import 'widgets/responsive_center.dart';
 
@@ -66,25 +65,12 @@ class AuthGate extends ConsumerWidget {
 
     return authState.when(
       data: (user) => user == null ? const WelcomeScreen() : const RootShell(),
-      // Matches the native splash screen (primary background, white
-      // wordmark) so there's no visual jump between the OS splash and the
-      // app taking over — just the spinner fading in underneath once
-      // Flutter is live.
+      // Matches the native splash screen's background so there's no visual
+      // jump between the OS splash and the app taking over.
       loading: () => Scaffold(
         backgroundColor: AppColors.of(context).primary,
         body: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              NibbleWordmark(
-                twoLines: true,
-                height: 64,
-                color: AppColors.of(context).onPrimary,
-              ),
-              const SizedBox(height: 24),
-              AppLoadingIndicator(color: AppColors.of(context).onPrimary),
-            ],
-          ),
+          child: AppLoadingIndicator(color: AppColors.of(context).onPrimary),
         ),
       ),
       error: (err, _) => Scaffold(
