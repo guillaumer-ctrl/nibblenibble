@@ -95,10 +95,14 @@ class _BugReportScreenState extends ConsumerState<BugReportScreen> {
   Future<void> _copyInstead() async {
     final s = AppStrings.of(context);
     if (!_validate(s)) return;
-    final body = await _buildReportBody(s);
-    await Clipboard.setData(ClipboardData(text: body));
-    if (!mounted) return;
-    AppSnackBar.showSuccess(context, s.bugReportCopied);
+    try {
+      final body = await _buildReportBody(s);
+      await Clipboard.setData(ClipboardData(text: body));
+      if (!mounted) return;
+      AppSnackBar.showSuccess(context, s.bugReportCopied);
+    } catch (_) {
+      if (mounted) AppSnackBar.showError(context, s.genericErrorMessage);
+    }
   }
 
   @override

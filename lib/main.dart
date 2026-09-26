@@ -80,12 +80,19 @@ Future<void> _run() async {
 }
 
 Future<void> _initAdsInBackground() async {
-  // RGPD/UMP: must gather (or confirm not required) consent before the
-  // Mobile Ads SDK is initialized, so no ad is ever requested ahead of it.
-  await ConsentService.instance.gatherConsent();
-  await MobileAds.instance.initialize();
-  // Not ready yet the very first time the user backgrounds/resumes the app
-  // is fine — it'll be ready for the next.
-  unawaited(AppOpenAdManager.instance.preload());
-  unawaited(InterstitialAdManager.instance.preload());
+  // Best-effort — none of this blocks or is required for the app itself to
+  // work, so a failure here (e.g. consent/init throwing) should just mean
+  // ads stay off for this session rather than an unhandled Future rejection.
+  try {
+    // RGPD/UMP: must gather (or confirm not required) consent before the
+    // Mobile Ads SDK is initialized, so no ad is ever requested ahead of it.
+    await ConsentService.instance.gatherConsent();
+    await MobileAds.instance.initialize();
+    // Not ready yet the very first time the user backgrounds/resumes the app
+    // is fine — it'll be ready for the next.
+    unawaited(AppOpenAdManager.instance.preload());
+    unawaited(InterstitialAdManager.instance.preload());
+  } catch (_) {
+    // See doc comment above.
+  }
 }

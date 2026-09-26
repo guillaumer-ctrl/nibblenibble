@@ -75,37 +75,45 @@ class _BannerAdWidgetState extends State<BannerAdWidget> {
   // RGPD/UMP: never request an ad until consent has been resolved (obtained,
   // or confirmed not required for this user's region) — see ConsentService.
   Future<void> _loadAdIfConsented() async {
-    final adUnitId = _bannerAdUnitId(widget.androidAdUnitId);
-    if (adUnitId == null) return;
-    final canRequest = await ConsentService.instance.canRequestAds;
-    if (!canRequest || !mounted) return;
+    // Best-effort — a failure here (e.g. consent/size lookup throwing) should
+    // never crash the widget or spam Crashlytics for what's just a missing
+    // ad slot; the widget already renders nothing until `_ad` is set.
+    try {
+      final adUnitId = _bannerAdUnitId(widget.androidAdUnitId);
+      if (adUnitId == null) return;
+      final canRequest = await ConsentService.instance.canRequestAds;
+      if (!canRequest || !mounted) return;
 
-    final width = MediaQuery.sizeOf(context).width.truncate();
-    final size = await AdSize.getLargeAnchoredAdaptiveBannerAdSizeWithOrientation(
-      Orientation.portrait,
-      width,
-    );
-    if (size == null || !mounted) return;
+      final width = MediaQuery.sizeOf(context).width.truncate();
+      final size = await AdSize.getLargeAnchoredAdaptiveBannerAdSizeWithOrientation(
+        Orientation.portrait,
+        width,
+      );
+      if (size == null || !mounted) return;
 
-    final ad = BannerAd(
-      adUnitId: adUnitId,
-      size: size,
-      request: const AdRequest(),
-      listener: BannerAdListener(
-        onAdLoaded: (ad) {
-          _attempt = 0;
-          if (mounted) setState(() => _ad = ad as BannerAd);
-        },
-        onAdFailedToLoad: (ad, error) {
-          ad.dispose();
-          if (!mounted || _attempt >= _retryDelays.length) return;
-          final delay = _retryDelays[_attempt];
-          _attempt++;
-          _retryTimer = Timer(delay, _loadAdIfConsented);
-        },
-      ),
-    );
-    ad.load();
+      final ad = BannerAd(
+        adUnitId: adUnitId,
+        size: size,
+        request: const AdRequest(),
+        listener: BannerAdListener(
+          onAdLoaded: (ad) {
+            _attempt = 0;
+            if (mounted) setState(() => _ad = ad as BannerAd);
+          },
+          onAdFailedToLoad: (ad, error) {
+            ad.dispose();
+            if (!mounted || _attempt >= _retryDelays.length) return;
+            final delay = _retryDelays[_attempt];
+            _attempt++;
+            _retryTimer = Timer(delay, _loadAdIfConsented);
+          },
+        ),
+      );
+      ad.load();
+    } catch (_) {
+      // See doc comment above — nothing to surface, the ad slot just
+      // collapses to nothing as it would on any other load failure.
+    }
   }
 
   @override

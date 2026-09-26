@@ -90,8 +90,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   }
 
   Future<void> _signOut() async {
-    await ref.read(authRepositoryProvider).signOut();
-    if (mounted) Navigator.of(context).popUntil((route) => route.isFirst);
+    try {
+      await ref.read(authRepositoryProvider).signOut();
+      if (mounted) Navigator.of(context).popUntil((route) => route.isFirst);
+    } catch (_) {
+      if (mounted) {
+        AppSnackBar.showError(context, AppStrings.of(context).genericErrorMessage);
+      }
+    }
   }
 
   Future<void> _deleteAccount() async {

@@ -28,6 +28,8 @@ Liste vivante : dis-moi quoi ajouter/cocher/supprimer et je la tiens à jour.
 - [ ] Fiche App Store Connect (description, captures d'écran, classification)
 
 ## Fait récemment
+- [x] Audit sécurité/qualité complet : aucun secret en dur, `.gitignore`/règles Firestore/gestion d'erreurs déjà propres dans l'ensemble ; try/catch ajoutés là où il en manquait (`profile_screen._signOut`, `bug_report_screen._copyInstead`, `banner_ad_widget`, `main._initAdsInBackground`) ; `README.md` et `description` de `pubspec.yaml` réécrits (n'étaient plus le boilerplate Flutter) ; test de parcours "ajouter un repas" ajouté (`test/add_meal_flow_test.dart`) ; mention obsolète de l'export CSV retirée de `graphics/store-listing.md` (seul le PDF existe encore)
+- [x] English/Spanish pages de politique de confidentialité et CGU ajoutées (`privacy-policy-en/es.html`, `terms-of-service-en/es.html`), avec sélecteur de langue ; les liens dans l'app pointent maintenant vers la langue active
 - [x] Corrigé : crash au lancement en release ("Failed to create an instance of androidx.work.impl.WorkDatabase") — R8 renommait/supprimait les classes générées par WorkManager/Room ; règles ProGuard ajoutées (`proguard-rules.pro`)
 - [x] Logo retiré de l'écran de chargement `AuthGate` (ne garde que le spinner)
 - [x] Démarrage : le consentement RGPD (UMP) et l'init du SDK AdMob ne bloquent plus `runApp()` — déplacés en arrière-plan après le premier affichage, pour ne plus retenir le splash natif le temps de l'appel réseau
