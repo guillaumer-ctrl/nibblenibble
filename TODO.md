@@ -28,6 +28,9 @@ Liste vivante : dis-moi quoi ajouter/cocher/supprimer et je la tiens à jour.
 - [ ] Fiche App Store Connect (description, captures d'écran, classification)
 
 ## Fait récemment
+- [x] Corrigé : crash au lancement en release ("Failed to create an instance of androidx.work.impl.WorkDatabase") — R8 renommait/supprimait les classes générées par WorkManager/Room ; règles ProGuard ajoutées (`proguard-rules.pro`)
+- [x] Logo retiré de l'écran de chargement `AuthGate` (ne garde que le spinner)
+- [x] Démarrage : le consentement RGPD (UMP) et l'init du SDK AdMob ne bloquent plus `runApp()` — déplacés en arrière-plan après le premier affichage, pour ne plus retenir le splash natif le temps de l'appel réseau
 - [x] Publicités AdMob en place avec de vrais IDs : bannières (Accueil/Stats), App Open, Interstitiel (export PDF)
 - [x] Feature graphics Play Store (1024×500) en FR/EN/ES, flatten 24-bit RGB (pas d'alpha)
 - [x] 15 visuels marketing pour la fiche Play/App Store (5 écrans × FR/EN/ES) — `graphics/marketing/`
