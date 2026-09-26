@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy Policy — nibblenibble</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FBF6EF; --cream-deep: #E7E2F7; --card: #FFFFFF;
+    --ink: #2E2620; --ink-soft: #7C6F5E; --primary: #4B3B8C; --line: #EDE2D3;
+  }
+  * { box-sizing: border-box; }
+  /* Regular weight everywhere, no bold. */
+  h1, h2, h3, strong, b, th { font-weight: 400; }
+  body {
+    margin: 0; background: var(--cream); color: var(--ink);
+    font-family: 'Poppins', system-ui, sans-serif; line-height: 1.65; font-size: 16px;
+  }
+  header { background: var(--primary); color: #fff; padding: 28px 16px; text-align: center; }
+  /* The SVG has no fill (black): invert it to white on the indigo banner. */
+  header .logo { height: 28px; width: auto; display: inline-block; filter: brightness(0) invert(1); }
+  main {
+    max-width: 760px; margin: -18px auto 40px; padding: 28px 24px 32px;
+    background: var(--card); border: 1px solid var(--line); border-radius: 22px;
+  }
+  h1 { font-size: 26px; line-height: 1.25; margin: 0 0 4px; }
+  .updated { color: var(--ink-soft); font-size: 14px; margin: 0 0 8px; }
+  .langs { color: var(--ink-soft); font-size: 13px; margin: 0 0 24px; }
+  .langs a { color: var(--primary); text-decoration: none; }
+  .langs a:hover { text-decoration: underline; }
+  h2 { font-size: 19px; margin: 32px 0 8px; color: var(--primary); }
+  h3 { font-size: 16px; margin: 22px 0 6px; }
+  p, ul { margin: 8px 0; }
+  ul { padding-left: 22px; }
+  li { margin: 4px 0; }
+  a { color: var(--primary); }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 15px; }
+  th, td { text-align: left; padding: 10px 12px; border: 1px solid var(--line); vertical-align: top; }
+  th { background: var(--cream-deep); }
+  .table-wrap { overflow-x: auto; }
+  footer { text-align: center; color: var(--ink-soft); font-size: 13px; padding: 0 16px 32px; }
+  @media (max-width: 520px) { main { margin: -18px 12px 32px; padding: 22px 18px; } }
+</style>
+</head>
+<body>
+<header><img class="logo" src="logo-1-line.svg" alt="nibblenibble"></header>
+<main>
+<h1>Privacy Policy</h1>
+<p class="updated">Last updated: September 18, 2026</p>
+<p class="langs"><a href="privacy-policy.html">Français</a> · English · <a href="privacy-policy-es.html">Español</a></p>
+
+<h2>1. Who we are</h2>
+<p>nibblenibble is a mobile app that helps families track their baby's food diversification. This policy explains what data is collected, why, and how you can control it.</p>
+<p><strong>Data controller:</strong> Guillaume Raspaud<br>
+<strong>Contact:</strong> <a href="mailto:contact@nibblenibble.app">contact@nibblenibble.app</a></p>
+
+<h2>2. What data is collected</h2>
+<h3>2.1 Account data</h3>
+<ul>
+  <li>Email address and password (if signing up by email), or Google profile information (name, email, photo) if signing in with Google Sign-In.</li>
+  <li>First name (editable in Account).</li>
+</ul>
+<h3>2.2 Data about the tracked baby</h3>
+<p>Entered by the adult account holder, never directly by a child:</p>
+<ul>
+  <li>Baby's first name</li>
+  <li>Date of birth</li>
+  <li>Sex (optional)</li>
+  <li>Logged meals: foods, date/time, baby's reactions, free-text notes</li>
+  <li>Optionally, a shared family note</li>
+</ul>
+<p>This data concerns a minor but is entered, controlled, and managed exclusively by the family adults who have access to the profile.</p>
+<h3>2.3 Data related to family sharing</h3>
+<p>If you invite a relative to follow the same baby profile: their email address (for the invitation) and their first name once they've joined the profile.</p>
+<h3>2.4 Technical and advertising data</h3>
+<ul>
+  <li>Device advertising identifier (via Google AdMob), for displaying ads.</li>
+  <li>Standard usage data collected by Google Play Services / Firebase (e.g. crashes, performance) if these services are enabled.</li>
+</ul>
+<h3>2.5 What we do NOT collect</h3>
+<ul>
+  <li>No geolocation.</li>
+  <li>No medical health data in the strict sense (the app tracks self-reported food preferences, not a medical record).</li>
+  <li>No payment data (the app doesn't offer any purchases).</li>
+</ul>
+
+<h2>3. Why this data is collected</h2>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Data</th><th>Purpose</th></tr></thead>
+  <tbody>
+    <tr><td>Email, password / Google account</td><td>Account authentication and security</td></tr>
+    <tr><td>First name</td><td>App personalization, identification within a shared family</td></tr>
+    <tr><td>Baby and meal data</td><td>Core function of the app: tracking food diversification</td></tr>
+    <tr><td>Invited relative's email</td><td>Enables sharing the tracking between family members</td></tr>
+    <tr><td>Advertising identifier</td><td>Displaying ads (AdMob), which fund the app's free use</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2>4. Where and how data is stored</h2>
+<p>Data is hosted on <strong>Firebase</strong> (Google Cloud), a third-party service used for:</p>
+<ul>
+  <li><strong>Firebase Authentication</strong> — account management</li>
+  <li><strong>Cloud Firestore</strong> — storage of app data (profiles, meals, families)</li>
+</ul>
+<p>By using the app, you agree that this data is processed by Google as part of these services. See <a href="https://policies.google.com/privacy">Google's privacy policy</a> for more details on their own practices.</p>
+
+<h2>5. Advertising (Google AdMob)</h2>
+<p>The app displays ads via <strong>Google AdMob</strong> to remain free. AdMob may collect an advertising identifier and other technical data to display ads, possibly personalized based on your preferences and consent.</p>
+<p>Depending on your region, a consent screen may be shown to let you choose between personalized or non-personalized ads. You can manage your ad preferences at any time from your Android device settings (Settings &gt; Privacy &gt; Ads).</p>
+<p>More information: <a href="https://policies.google.com/technologies/ads">Google's Ads Policy</a>.</p>
+
+<h2>6. Data sharing</h2>
+<p>We do not sell any data. Data is only shared:</p>
+<ul>
+  <li>With <strong>Google/Firebase</strong> (technical hosting) and <strong>Google AdMob</strong> (advertising), as technical processors.</li>
+  <li>With the other <strong>family members</strong> you explicitly invite to a baby profile — they see the meals and information you choose to share with them.</li>
+</ul>
+<p>No other third party has access to your data.</p>
+
+<h2>7. How long data is kept</h2>
+<p>Data is kept as long as the account exists. You can at any time:</p>
+<ul>
+  <li><strong>Delete a baby profile</strong> (from the Baby Profile screen) — permanently deletes its meals and notes.</li>
+  <li><strong>Delete your account</strong> (from Account) — removes your access; if you're the only administrator of a baby profile, the app will first ask you to transfer admin rights or delete that profile.</li>
+</ul>
+<p>These deletions are permanent and irreversible.</p>
+
+<h2>8. Your rights (GDPR)</h2>
+<p>If you reside in the European Union, you have the following rights over your data and your child's data:</p>
+<ul>
+  <li><strong>Right of access</strong>: know what data is held.</li>
+  <li><strong>Right of rectification</strong>: correct inaccurate data (editable directly in the app for most fields).</li>
+  <li><strong>Right to erasure</strong>: delete your data (via the app's deletion features, or by contacting us).</li>
+  <li><strong>Right to portability</strong>: receive your data in a usable format.</li>
+  <li><strong>Right to object</strong>: object to certain processing (e.g. personalized advertising).</li>
+</ul>
+<p>To exercise these rights beyond what the app allows directly, contact us at <strong><a href="mailto:contact@nibblenibble.app">contact@nibblenibble.app</a></strong>.</p>
+<p>You can also file a complaint with your national data protection authority (in France, the CNIL: <a href="https://www.cnil.fr">www.cnil.fr</a>).</p>
+
+<h2>9. Data concerning a minor</h2>
+<p>The baby tracked in the app is <strong>not</strong> the user of the service — the app is designed to be used by an adult (parent, legal guardian, or authorized relative) who enters and controls the child's data. We do not collect any data directly from a child, and the app is not intended to be used directly by minors.</p>
+
+<h2>10. Security</h2>
+<p>Data is protected by Firebase's security rules: only members explicitly authorized on a baby profile can view or edit its data. Passwords are never stored in plain text (managed by Firebase Authentication).</p>
+
+<h2>11. Changes to this policy</h2>
+<p>This policy may evolve along with the app. In case of a significant change, we will notify you via the app or by email.</p>
+
+<h2>12. Contact</h2>
+<p>For any question about this policy or your data: <strong><a href="mailto:contact@nibblenibble.app">contact@nibblenibble.app</a></strong></p>
+</main>
+<footer>© nibblenibble — <a href="terms-of-service-en.html">Terms of Service</a></footer>
+</body>
+</html>

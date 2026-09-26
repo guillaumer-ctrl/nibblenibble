@@ -23,8 +23,29 @@ class AccountScreen extends ConsumerStatefulWidget {
   ConsumerState<AccountScreen> createState() => _AccountScreenState();
 }
 
-const _privacyPolicyUrl = 'https://nibblenibble.app/privacy-policy.html';
-const _termsOfServiceUrl = 'https://nibblenibble.app/terms-of-service.html';
+/// Privacy policy / terms of service pages exist in French (the default,
+/// no suffix), English and Spanish — pick the one matching the app's
+/// active language rather than always sending everyone to the French page.
+String _privacyPolicyUrl(BuildContext context) {
+  final suffix = _legalPageLangSuffix(context);
+  return 'https://nibblenibble.app/privacy-policy$suffix.html';
+}
+
+String _termsOfServiceUrl(BuildContext context) {
+  final suffix = _legalPageLangSuffix(context);
+  return 'https://nibblenibble.app/terms-of-service$suffix.html';
+}
+
+String _legalPageLangSuffix(BuildContext context) {
+  switch (Localizations.localeOf(context).languageCode) {
+    case 'en':
+      return '-en';
+    case 'es':
+      return '-es';
+    default:
+      return '';
+  }
+}
 
 class _AccountScreenState extends ConsumerState<AccountScreen> {
   bool _showAdPreferences = false;
@@ -115,12 +136,12 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
             _SettingsTile(
               icon: Icons.privacy_tip_outlined,
               label: s.privacyPolicy,
-              onTap: () => _openUrl(_privacyPolicyUrl),
+              onTap: () => _openUrl(_privacyPolicyUrl(context)),
             ),
             _SettingsTile(
               icon: Icons.description_outlined,
               label: s.termsOfService,
-              onTap: () => _openUrl(_termsOfServiceUrl),
+              onTap: () => _openUrl(_termsOfServiceUrl(context)),
             ),
           ],
         ),
