@@ -505,14 +505,13 @@
   }
   .footer-wordmark {
     width: 100%; overflow: hidden;
-    text-align: center; line-height: 0.8;
-    padding: 10px 0 0; user-select: none;
+    display: flex; justify-content: center; line-height: 0.92;
+    padding: 14px 0 6px; user-select: none;
   }
   .footer-wordmark-text {
-    display: inline-block; white-space: nowrap;
+    flex: none; white-space: nowrap;
     font-weight: 800; letter-spacing: -2px;
-    font-size: 13.5vw; color: var(--line);
-    transform-origin: center;
+    font-size: 17vw; color: var(--line);
   }
 
   /* ---------- reveal on scroll ---------- */
@@ -971,27 +970,6 @@
         if (e.key === 'Escape') closeLangDropdown();
       });
     }
-
-    var wordmark = document.querySelector('.footer-wordmark-text');
-    var wordmarkWrap = document.querySelector('.footer-wordmark');
-    var fitWordmark = function () {
-      if (!wordmark || !wordmarkWrap) return;
-      wordmark.style.transform = 'scaleX(1)';
-      var textWidth = wordmark.getBoundingClientRect().width;
-      var containerWidth = wordmarkWrap.getBoundingClientRect().width;
-      if (textWidth > 0 && containerWidth > 0) {
-        wordmark.style.transform = 'scaleX(' + (containerWidth / textWidth) + ')';
-      }
-    };
-    fitWordmark();
-    if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(fitWordmark);
-    }
-    var resizeTimer;
-    window.addEventListener('resize', function () {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(fitWordmark, 120);
-    });
 
     var header = document.getElementById('site-header');
     var onScroll = function () {
