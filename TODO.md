@@ -14,7 +14,6 @@ Liste vivante : dis-moi quoi ajouter/cocher/supprimer et je la tiens à jour.
 - [ ] `deleteBaby` laisse volontairement des notes orphelines et des `babyIds` obsolètes chez les autres membres — compromis assumé (pas de Cloud Functions sur le plan Spark), à garder en tête
 
 ## Améliorations produit (non bloquantes)
-- [ ] Landing page `nibblenibble.app` : `index.html` a été supprimé (contenu obsolète — mentionnait des fonctionnalités retirées). Seules `privacy-policy.html` et `terms-of-service.html` restent en ligne (utilisées par l'app). À refaire de zéro si une vraie landing page est souhaitée plus tard.
 - [ ] Pagination des repas passés (actuellement plafonné à 400 repas les plus récents pour borner le coût Firestore — largement suffisant à court terme, mais une vraie pagination/scroll infini serait plus propre à terme)
 
 ## iOS (décision prise : oui, on sort sur iOS)
@@ -28,6 +27,7 @@ Liste vivante : dis-moi quoi ajouter/cocher/supprimer et je la tiens à jour.
 - [ ] Fiche App Store Connect (description, captures d'écran, classification)
 
 ## Fait récemment
+- [x] Nouvelle landing page `nibblenibble.app` (`index.html`, racine du repo) : héro + captures marketing réelles (recadrées via script Python pour ne garder que le téléphone) sur fond crème/indigo aux couleurs de l'app, sections fonctionnalités/FAQ/CTA, animations au scroll, responsive mobile. Pas de lien app store (app pas encore publiée) — CTA "être prévenu·e" en `mailto:`. Images sources dans `img/`.
 - [x] Audit sécurité/qualité complet : aucun secret en dur, `.gitignore`/règles Firestore/gestion d'erreurs déjà propres dans l'ensemble ; try/catch ajoutés là où il en manquait (`profile_screen._signOut`, `bug_report_screen._copyInstead`, `banner_ad_widget`, `main._initAdsInBackground`) ; `README.md` et `description` de `pubspec.yaml` réécrits (n'étaient plus le boilerplate Flutter) ; test de parcours "ajouter un repas" ajouté (`test/add_meal_flow_test.dart`) ; mention obsolète de l'export CSV retirée de `graphics/store-listing.md` (seul le PDF existe encore)
 - [x] English/Spanish pages de politique de confidentialité et CGU ajoutées (`privacy-policy-en/es.html`, `terms-of-service-en/es.html`), avec sélecteur de langue ; les liens dans l'app pointent maintenant vers la langue active
 - [x] Corrigé : crash au lancement en release ("Failed to create an instance of androidx.work.impl.WorkDatabase") — R8 renommait/supprimait les classes générées par WorkManager/Room ; règles ProGuard ajoutées (`proguard-rules.pro`)

@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+(function () {
+  try {
+    var stored = localStorage.getItem('nn-theme');
+    var theme = stored || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', theme);
+  } catch (e) {}
+})();
+</script>
+<title>nibblenibble — Suivi de la diversification alimentaire de bébé, en famille</title>
+<meta name="description" content="nibblenibble accompagne toute la famille dans la diversification alimentaire de bébé : repas, réactions, statistiques et export PDF, au même endroit. Gratuite, disponible en français, anglais et espagnol.">
+<link rel="icon" href="favicon.png">
+<link rel="apple-touch-icon" href="favicon.png">
+<meta property="og:title" content="nibblenibble — la diversification alimentaire, en famille">
+<meta property="og:description" content="Suivez chaque repas, chaque réaction, en famille. Gratuite, privée, disponible en FR/EN/ES.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FBF6EF;
+    --cream-deep: #F3ECDF;
+    --card: #FFFFFF;
+    --primary: #4B3B8C;
+    --primary-dark: #332759;
+    --primary-light: #E7E2F7;
+    --on-primary: #FFFFFF;
+    --sage: #339957;
+    --sage-light: #D9F2DE;
+    --amber: #DE9E1E;
+    --amber-light: #FCEAB8;
+    --red: #D93A3A;
+    --ink: #2E2620;
+    --ink-soft: #7C6F5E;
+    --ink-vsoft: #B3A692;
+    --line: #EDE2D3;
+    --accent-orange: #F2994A;
+    --accent-teal: #29B6C6;
+    --accent-green: #27AE60;
+    --accent-purple: #8B7CE0;
+    --shadow: 0 20px 50px -20px rgba(75, 59, 140, 0.25);
+    --shadow-color: rgba(46, 38, 32, 0.28);
+    --btn-shadow: rgba(75, 59, 140, 0.55);
+    --btn-shadow-hover: rgba(75, 59, 140, 0.6);
+    --header-scrolled-bg: rgba(251, 246, 239, 0.85);
+    --radius-lg: 28px;
+    --radius-md: 20px;
+    --radius-pill: 999px;
+  }
+
+  :root[data-theme="dark"] {
+    --cream: #1E1B2E;
+    --cream-deep: #232036;
+    --card: #2A2640;
+    --primary: #B3A2F2;
+    --primary-dark: #8F7DE0;
+    --primary-light: #3A3555;
+    --on-primary: #241B47;
+    --sage-light: #1F3327;
+    --amber-light: #3A2E14;
+    --ink: #F3F1F8;
+    --ink-soft: #9C94B8;
+    --ink-vsoft: #726A8C;
+    --line: #3A3555;
+    --shadow: 0 20px 50px -20px rgba(0, 0, 0, 0.6);
+    --shadow-color: rgba(0, 0, 0, 0.45);
+    --btn-shadow: rgba(179, 162, 242, 0.3);
+    --btn-shadow-hover: rgba(179, 162, 242, 0.4);
+    --header-scrolled-bg: rgba(30, 27, 46, 0.82);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'Poppins', system-ui, sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+
+  img { max-width: 100%; display: block; }
+  a { color: inherit; text-decoration: none; }
+  section { position: relative; }
+  #fonctionnalites, #faq, #langues, #cta { scroll-margin-top: 90px; }
+  .wrap { max-width: 1160px; margin: 0 auto; padding: 0 24px; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 13px; font-weight: 700; letter-spacing: 0.3px;
+    color: var(--primary); background: var(--primary-light);
+    padding: 8px 16px; border-radius: var(--radius-pill);
+  }
+  h1, h2, h3 {
+    margin: 0; font-weight: 800; letter-spacing: -0.5px; line-height: 1.15;
+    font-family: 'Poppins', system-ui, sans-serif;
+  }
+  p { margin: 0; }
+  button, input, select, textarea {
+    font-family: inherit;
+  }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 16px 28px; border-radius: var(--radius-pill);
+    font-weight: 700; font-size: 15px; border: none; cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+    white-space: nowrap;
+  }
+  .btn-primary {
+    background: var(--primary); color: var(--on-primary);
+    box-shadow: 0 14px 30px -10px var(--btn-shadow);
+  }
+  .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 18px 36px -8px var(--btn-shadow-hover); }
+  .btn-ghost {
+    background: transparent; color: var(--primary); border: 1.5px solid var(--line);
+  }
+  .btn-ghost:hover { border-color: var(--primary); transform: translateY(-3px); }
+
+  /* ---------- Header ---------- */
+  header {
+    position: sticky; top: 0; z-index: 50;
+    padding: 18px 0;
+    transition: background 0.35s ease, box-shadow 0.35s ease, padding 0.35s ease;
+  }
+  header.scrolled {
+    background: var(--header-scrolled-bg);
+    backdrop-filter: blur(14px) saturate(160%);
+    -webkit-backdrop-filter: blur(14px) saturate(160%);
+    box-shadow: 0 8px 24px -16px var(--shadow-color);
+    padding: 12px 0;
+  }
+  .nav { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+  .logo-mark {
+    display: block;
+    width: 168px; height: 26px;
+    background-color: var(--primary);
+    -webkit-mask: url('logo-1-line.svg') no-repeat center / contain;
+    mask: url('logo-1-line.svg') no-repeat center / contain;
+    flex-shrink: 0;
+    transition: background-color 0.3s ease;
+  }
+  :root[data-theme="dark"] .logo-mark { background-color: #FFFFFF; }
+  .logo-link { display: flex; align-items: center; }
+  .nav-links { display: flex; align-items: center; gap: 32px; }
+  .nav-links a {
+    font-size: 14.5px; font-weight: 600; color: var(--ink-soft);
+    position: relative; padding: 4px 0;
+  }
+  .nav-links a::after {
+    content: ''; position: absolute; left: 0; bottom: -2px; height: 2px; width: 0;
+    background: var(--primary); transition: width 0.25s ease;
+  }
+  .nav-links a:hover { color: var(--ink); }
+  .nav-links a:hover::after { width: 100%; }
+  .nav-cta { display: flex; align-items: center; gap: 14px; }
+  .lang-note { display: none; }
+  .nav-dropdown { position: relative; }
+  .nav-dropdown-toggle {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: none; border: none; cursor: pointer; padding: 4px 0;
+    font-family: inherit; font-size: 14.5px; font-weight: 600; color: var(--ink-soft);
+    transition: color 0.2s ease;
+  }
+  .nav-dropdown-toggle:hover { color: var(--ink); }
+  .nav-dropdown-toggle .chevron { transition: transform 0.25s ease; }
+  .nav-dropdown.open .nav-dropdown-toggle .chevron { transform: rotate(180deg); }
+  .nav-dropdown.open .nav-dropdown-toggle { color: var(--ink); }
+  .nav-dropdown-menu {
+    position: absolute; top: calc(100% + 16px); left: 50%;
+    transform: translateX(-50%) translateY(-6px);
+    background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+    box-shadow: var(--shadow); padding: 8px; min-width: 140px;
+    opacity: 0; visibility: hidden; pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+    z-index: 60;
+  }
+  .nav-dropdown.open .nav-dropdown-menu {
+    opacity: 1; visibility: visible; pointer-events: auto; transform: translateX(-50%) translateY(0);
+  }
+  .nav-dropdown-menu a {
+    display: block; padding: 9px 12px; border-radius: 8px;
+    font-size: 14px; font-weight: 600; color: var(--ink-soft);
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .nav-dropdown-menu a:hover { background: var(--primary-light); color: var(--primary); }
+  .theme-toggle {
+    width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
+    background: var(--card); border: 1px solid var(--line); color: var(--ink-soft);
+    display: flex; align-items: center; justify-content: center; cursor: pointer;
+    transition: transform 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+  }
+  .theme-toggle:hover { color: var(--primary); border-color: var(--primary); transform: translateY(-2px); }
+  .theme-toggle svg { width: 18px; height: 18px; }
+  .theme-toggle .icon-sun { display: none; }
+  :root[data-theme="dark"] .theme-toggle .icon-sun { display: block; }
+  :root[data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    padding: 96px 0 88px;
+    position: relative;
+  }
+  /* Flat solid circles, no gradient/blur — matches the app's welcome screen
+     decoration. Hero has no overflow:hidden so they bleed past its bottom
+     edge into whatever section follows, uncropped. */
+  .blob {
+    position: absolute; border-radius: 50%;
+    z-index: 0; pointer-events: none;
+  }
+  .blob-1 {
+    width: 420px; height: 420px; top: -140px; right: -140px;
+    background: var(--primary-light);
+    animation: float-slow 14s ease-in-out infinite;
+  }
+  .blob-2 {
+    width: 300px; height: 300px; bottom: -220px; left: -90px;
+    background: var(--sage-light);
+    animation: float-slow 16s ease-in-out infinite reverse;
+  }
+  @keyframes float-slow {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(-14px, 16px); }
+  }
+
+  .hero-inner {
+    position: relative; z-index: 1;
+    display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 40px; align-items: center;
+    padding-top: 12px;
+  }
+  .hero-copy h1 {
+    font-size: clamp(34px, 4.4vw, 54px); line-height: 1.08; margin: 20px 0 20px;
+    color: var(--ink);
+  }
+  .hero-copy h1 span { color: var(--primary); }
+  .hero-copy .lede {
+    font-size: 18px; color: var(--ink-soft); max-width: 480px; margin-bottom: 32px;
+    font-weight: 500;
+  }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 28px; }
+  .hero-trust { display: flex; align-items: center; gap: 10px; font-size: 13.5px; color: var(--ink-soft); font-weight: 600; }
+  .hero-trust .dots { display: flex; }
+  .hero-trust .dots span {
+    width: 9px; height: 9px; border-radius: 50%; display: inline-block; margin-left: -6px;
+    border: 2px solid var(--cream);
+  }
+  .hero-trust .dots span:first-child { margin-left: 0; }
+
+  .hero-visual { position: relative; display: flex; justify-content: center; align-items: flex-start; }
+  .phone-shell {
+    position: relative; width: min(305px, 68vw);
+    animation: phone-float 6s ease-in-out infinite;
+  }
+  .phone-shell img {
+    width: 100%; height: auto;
+    border-radius: 34px;
+    box-shadow: var(--shadow);
+  }
+  @keyframes phone-float {
+    0%, 100% { transform: translateY(0) rotate(-1.5deg); }
+    50% { transform: translateY(-16px) rotate(1deg); }
+  }
+  .float-card {
+    position: absolute; background: var(--card); border: 1px solid var(--line);
+    border-radius: 18px; padding: 12px 16px; box-shadow: 0 16px 30px -12px var(--shadow-color);
+    display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 13.5px;
+    height: 52px; box-sizing: border-box;
+    animation: card-float 5s ease-in-out infinite;
+  }
+  .float-card .ico {
+    width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 14px; flex-shrink: 0;
+  }
+  .float-card-1 { top: 8%; left: -6%; animation-delay: 0.2s; }
+  .float-card-1 .ico { background: var(--sage-light); }
+  .float-card-2 { bottom: 12%; right: -8%; animation-delay: 1.1s; }
+  .float-card-2 .ico { background: var(--amber-light); }
+  @keyframes card-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+
+  /* Multi-step "flow" tags: several absolutely-stacked steps cross-fade in
+     a loop, used on feature screenshots to mime a short interaction (pick a
+     date, then check foods; expand a reaction; fill the invite form). */
+  .flow-tag { padding: 0; width: 250px; height: 52px; overflow: hidden; }
+  .flow-tag-wide { width: 288px; }
+  .flow-step {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 16px; white-space: nowrap; font-size: 13.5px; font-weight: 700;
+  }
+  .mini-toggle { display: flex; align-items: center; gap: 6px; }
+  .mini-pill {
+    font-size: 11px; font-weight: 700; padding: 7px 11px; border-radius: var(--radius-pill);
+    background: var(--cream-deep); color: var(--ink-soft); white-space: nowrap;
+  }
+  .mini-pill.active { background: var(--primary); color: var(--on-primary); }
+  @keyframes toggleRoleA {
+    0%, 3% { background: var(--primary); color: var(--on-primary); }
+    16%, 100% { background: var(--cream-deep); color: var(--ink-soft); }
+  }
+  @keyframes toggleRoleB {
+    0%, 16% { background: var(--cream-deep); color: var(--ink-soft); }
+    22%, 40% { background: var(--primary); color: var(--on-primary); }
+    44%, 100% { background: var(--cream-deep); color: var(--ink-soft); }
+  }
+  .mini-pill.toggle-a { animation: toggleRoleA 6s ease-in-out infinite; }
+  .mini-pill.toggle-b { animation: toggleRoleB 6s ease-in-out infinite; }
+  .check-box { flex-shrink: 0; }
+  .check-box .box { fill: none; }
+  .check-box .tick {
+    stroke-dasharray: 16; stroke-dashoffset: 16;
+  }
+  @keyframes checkDrawA {
+    0%, 8% { stroke-dashoffset: 16; }
+    24%, 100% { stroke-dashoffset: 0; }
+  }
+  @keyframes checkDrawB {
+    0%, 58% { stroke-dashoffset: 16; }
+    74%, 100% { stroke-dashoffset: 0; }
+  }
+  .step-a .tick { animation: checkDrawA 6s ease-in-out infinite; }
+  .step-b .tick { animation: checkDrawB 6s ease-in-out infinite; }
+  .reaction-row { width: 100%; display: flex; align-items: center; justify-content: space-between; }
+  .reaction-row .left { display: flex; align-items: center; gap: 10px; }
+  .reaction-row .right { display: flex; align-items: center; gap: 4px; color: var(--ink-soft); font-weight: 700; }
+  .chip-food { color: var(--ink); font-weight: 700; }
+  .chip-reaction { display: flex; align-items: center; gap: 6px; font-weight: 700; }
+  .typing-text {
+    display: inline-block; overflow: hidden; white-space: nowrap; vertical-align: bottom;
+    border-right: 2px solid var(--primary); width: 0;
+    animation: typeEmail 6s steps(18, end) infinite;
+  }
+  @keyframes typeEmail {
+    0%, 53% { width: 0; }
+    88%, 96% { width: 150px; }
+    100% { width: 150px; }
+  }
+  @keyframes tagStepA {
+    0%, 42% { opacity: 1; transform: translateY(0); }
+    50%, 100% { opacity: 0; transform: translateY(-4px); }
+  }
+  @keyframes tagStepB {
+    0%, 46% { opacity: 0; transform: translateY(4px); }
+    54%, 96% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-4px); }
+  }
+  .step-a { animation: tagStepA 6s ease-in-out infinite; }
+  .step-b { animation: tagStepB 6s ease-in-out infinite; opacity: 0; }
+  @keyframes tagStep3A {
+    0%, 28% { opacity: 1; transform: translateY(0); }
+    34%, 100% { opacity: 0; transform: translateY(-4px); }
+  }
+  @keyframes tagStep3B {
+    0%, 30% { opacity: 0; transform: translateY(4px); }
+    36%, 61% { opacity: 1; transform: translateY(0); }
+    67%, 100% { opacity: 0; transform: translateY(-4px); }
+  }
+  @keyframes tagStep3C {
+    0%, 63% { opacity: 0; transform: translateY(4px); }
+    69%, 97% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; }
+  }
+  .step3-a { animation: tagStep3A 9s ease-in-out infinite; }
+  .step3-b { animation: tagStep3B 9s ease-in-out infinite; opacity: 0; }
+  .step3-c { animation: tagStep3C 9s ease-in-out infinite; opacity: 0; }
+
+  /* ---------- Section heading ---------- */
+  .section-head { text-align: center; max-width: 640px; margin: 0 auto 56px; }
+  .section-head h2 { font-size: clamp(28px, 3.4vw, 40px); margin: 16px 0 14px; }
+  .section-head p { color: var(--ink-soft); font-size: 16.5px; font-weight: 500; }
+
+  .features { padding: 88px 0; }
+  .feature-row {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center;
+    margin-bottom: 72px;
+  }
+  .feature-row:last-child { margin-bottom: 0; }
+  .feature-row.reverse .feature-copy { order: 2; }
+  .feature-row.reverse .feature-img { order: 1; }
+  .feature-tag {
+    display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 700;
+    color: var(--primary); background: var(--primary-light); padding: 6px 14px; border-radius: var(--radius-pill);
+    margin-bottom: 16px;
+  }
+  .feature-copy h3 { font-size: clamp(22px, 2.6vw, 30px); margin-bottom: 14px; line-height: 1.2; }
+  .feature-copy p { color: var(--ink-soft); font-size: 16px; font-weight: 500; margin-bottom: 20px; }
+  .feature-copy ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
+  .feature-copy li { display: flex; align-items: flex-start; gap: 10px; font-size: 15px; color: var(--ink); font-weight: 500; }
+  .feature-copy li .check {
+    width: 20px; height: 20px; border-radius: 50%; background: var(--sage-light); color: var(--sage);
+    display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; margin-top: 2px;
+  }
+  .feature-img { display: flex; justify-content: center; }
+  .feature-img .frame {
+    position: relative; width: min(330px, 100%);
+    transition: transform 0.4s ease;
+  }
+  .feature-img .frame:hover { transform: translateY(-8px) rotate(-0.6deg); }
+  .feature-img img {
+    width: 100%; height: auto; display: block;
+    border-radius: 30px;
+    box-shadow: 0 24px 48px -20px var(--shadow-color);
+  }
+  .feature-img .float-card { white-space: nowrap; }
+  .feature-tag-slot {
+    position: absolute; z-index: 2;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .feature-tag-slot > .float-card { position: static; }
+  .feature-tag-slot > .float-card.flow-tag { position: relative; }
+  .feature-tag-slot-top { top: 6%; right: -10%; align-items: flex-end; }
+  .feature-tag-slot-top.feature-tag-slot-low { top: 75%; }
+  .feature-tag-slot-bottom { bottom: 6%; left: -10%; align-items: flex-start; }
+  .feature-tag-slot-top .float-card { animation-delay: 0.3s; }
+  .feature-tag-slot-bottom .float-card { animation-delay: 0.9s; }
+
+  /* ---------- extras strip ---------- */
+  .extras { padding: 88px 0; }
+  .extras-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .extra-card {
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-md);
+    padding: 28px 24px; transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .extra-card:hover { transform: translateY(-6px); box-shadow: var(--shadow); }
+  .extra-card .ico {
+    width: 46px; height: 46px; border-radius: 14px; display: flex; align-items: center; justify-content: center;
+    font-size: 22px; margin-bottom: 16px;
+  }
+  .extra-card h4 { margin: 0 0 8px; font-size: 17px; font-weight: 700; }
+  .extra-card p { color: var(--ink-soft); font-size: 14.5px; font-weight: 500; }
+
+  /* ---------- FAQ ---------- */
+  .faq { padding: 88px 0; }
+  .faq-list { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+  .faq-item {
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+  .faq-q {
+    width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: 20px 24px; background: none; border: none; cursor: pointer; text-align: left;
+    font-family: inherit; font-size: 16px; font-weight: 700; color: var(--ink);
+  }
+  .faq-q .plus {
+    width: 28px; height: 28px; border-radius: 50%; background: var(--primary-light); color: var(--primary);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 16px;
+    transition: transform 0.3s ease;
+  }
+  .faq-item.open .faq-q .plus { transform: rotate(45deg); }
+  .faq-a {
+    max-height: 0; overflow: hidden; transition: max-height 0.35s ease;
+  }
+  .faq-a p { padding: 0 24px 22px; color: var(--ink-soft); font-size: 15px; font-weight: 500; line-height: 1.65; }
+
+  /* ---------- CTA ---------- */
+  .cta { padding: 0 0 88px; }
+  .cta-card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 36px;
+    padding: 64px 40px; text-align: center; position: relative; overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .cta-blob {
+    position: absolute; border-radius: 50%; z-index: 0; pointer-events: none;
+  }
+  .cta-blob-1 { width: 260px; height: 260px; top: -110px; left: -80px; background: var(--primary-light); }
+  .cta-blob-2 { width: 220px; height: 220px; bottom: -100px; right: -60px; background: var(--sage-light); }
+  .cta-card > *:not(.cta-blob) { position: relative; z-index: 1; }
+  .cta-card h2 { font-size: clamp(26px, 3.4vw, 36px); margin: 18px 0 14px; }
+  .cta-card p { color: var(--ink-soft); font-size: 16.5px; font-weight: 500; max-width: 480px; margin: 0 auto 32px; }
+  .cta-actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 14px; }
+
+  /* ---------- Footer ---------- */
+  footer { border-top: 1px solid var(--line); padding: 72px 0 0; }
+  .footer-top {
+    display: grid; grid-template-columns: 1.3fr 1fr 1fr 1fr; gap: 40px; padding-bottom: 48px;
+  }
+  .footer-brand p { color: var(--ink-soft); font-size: 14.5px; font-weight: 500; margin: 16px 0 20px; max-width: 260px; }
+  .footer-brand .logo-mark { margin-bottom: 4px; }
+  .footer-socials { display: flex; gap: 10px; }
+  .footer-socials a {
+    width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: center; font-size: 15px;
+    transition: background 0.25s ease, color 0.25s ease, transform 0.25s ease;
+  }
+  .footer-socials a:hover { background: var(--primary); color: #fff; transform: translateY(-3px); }
+  .footer-col h5 { font-size: 13px; font-weight: 700; letter-spacing: 0.4px; text-transform: uppercase; color: var(--ink-vsoft); margin: 0 0 18px; }
+  .footer-col ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+  .footer-col a { font-size: 14.5px; font-weight: 600; color: var(--ink-soft); transition: color 0.2s ease; }
+  .footer-col a:hover { color: var(--primary); }
+  .footer-bottom {
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+    padding: 24px 0; border-top: 1px solid var(--line); font-size: 13px; color: var(--ink-vsoft); font-weight: 600;
+  }
+  .footer-wordmark {
+    width: 100%; overflow: hidden;
+    text-align: center; line-height: 0.8;
+    padding: 10px 0 0; user-select: none;
+  }
+  .footer-wordmark-text {
+    display: inline-block; white-space: nowrap;
+    font-weight: 800; letter-spacing: -2px;
+    font-size: 13.5vw; color: var(--line);
+    transform-origin: center;
+  }
+
+  /* ---------- reveal on scroll ---------- */
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+  .reveal-delay-1 { transition-delay: 0.08s; }
+  .reveal-delay-2 { transition-delay: 0.16s; }
+  .reveal-delay-3 { transition-delay: 0.24s; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 900px) {
+    .hero { padding: 72px 0 64px; }
+    .features, .extras, .faq { padding: 64px 0; }
+    .cta { padding: 0 0 64px; }
+    footer { padding-top: 56px; }
+    .nav-links { display: none; }
+    .hero-inner { grid-template-columns: 1fr; }
+    .hero-copy { text-align: center; }
+    .hero-copy .lede { margin-left: auto; margin-right: auto; }
+    .hero-actions { justify-content: center; }
+    .hero-trust { justify-content: center; }
+    .hero-visual { margin-top: 20px; }
+    .feature-row { grid-template-columns: 1fr; gap: 32px; }
+    .feature-row.reverse .feature-copy { order: 1; }
+    .feature-row.reverse .feature-img { order: 2; }
+    .feature-copy { text-align: center; }
+    .feature-copy ul { align-items: center; }
+    .feature-copy li { text-align: left; }
+    .extras-grid { grid-template-columns: 1fr; }
+    .footer-top { grid-template-columns: 1fr 1fr; }
+  }
+  .nav-cta .btn .short { display: none; }
+  @media (max-width: 560px) {
+    .footer-top { grid-template-columns: 1fr; }
+    .float-card { display: none; }
+    .cta-card { padding: 48px 24px; }
+    .logo-mark { width: 138px; height: 21px; }
+    .nav-cta .btn { padding: 11px 16px; font-size: 13px; }
+    .nav-cta .btn .full { display: none; }
+    .nav-cta .btn .short { display: inline; }
+  }
+</style>
+</head>
+<body>
+
+<header id="site-header">
+  <div class="wrap nav">
+    <a class="logo-link" href="#top" aria-label="nibblenibble — accueil">
+      <span class="logo-mark"></span>
+    </a>
+    <nav class="nav-links">
+      <a href="#fonctionnalites">Fonctionnalités</a>
+      <a href="#faq">FAQ</a>
+      <div class="nav-dropdown" id="lang-dropdown">
+        <button class="nav-dropdown-toggle" type="button" aria-haspopup="true" aria-expanded="false">
+          Langues
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" width="12" height="12" xmlns="http://www.w3.org/2000/svg"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="nav-dropdown-menu">
+          <a href="index-en.html">English</a>
+          <a href="index-es.html">Español</a>
+        </div>
+      </div>
+    </nav>
+    <div class="nav-cta">
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Basculer le thème clair / sombre">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20.5 14.5A8.5 8.5 0 1 1 9.5 3.5a7 7 0 0 0 11 11Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v2.5M12 19v2.5M4.6 4.6l1.8 1.8M17.6 17.6l1.8 1.8M2.5 12h2.5M19 12h2.5M4.6 19.4l1.8-1.8M17.6 6.4l1.8-1.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+      <a class="btn btn-primary" href="#cta"><span class="full">Être prévenu·e du lancement</span><span class="short">Me prévenir</span></a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="wrap hero-inner">
+      <div class="hero-copy reveal in">
+        <span class="eyebrow">🍼 Diversification alimentaire, en famille</span>
+        <h1>Suivez chaque repas de bébé, <span>ensemble</span>.</h1>
+        <p class="lede">nibblenibble accompagne toute la famille pas à pas dans la diversification alimentaire : repas, réactions, statistiques et export PDF, au même endroit et en toute sérénité.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#cta">Être prévenu·e du lancement</a>
+          <a class="btn btn-ghost" href="#fonctionnalites">Découvrir l'app ↓</a>
+        </div>
+        <div class="hero-trust">
+          <span class="dots">
+            <span style="background:var(--sage)"></span>
+            <span style="background:var(--amber)"></span>
+            <span style="background:var(--primary)"></span>
+          </span>
+          Gratuite · Données privées · FR / EN / ES
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="phone-shell">
+          <img src="img/hero-home.png" alt="Écran d'accueil de l'application nibblenibble, avec les prochains repas de bébé" width="727" height="1526" loading="eager">
+          <div class="float-card float-card-1">
+            <span class="ico" style="color:var(--sage)">
+              <svg viewBox="0 0 24 24" fill="none" width="18" height="18" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9.3" stroke="currentColor" stroke-width="2"/><path d="M8 13.3c1.1 1.3 2.5 2 4 2s2.9-.7 4-2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </span>
+            Aimé — Carotte
+          </div>
+          <div class="float-card float-card-2">
+            <span class="ico" style="color:var(--amber)">
+              <svg viewBox="0 0 24 24" fill="none" width="18" height="18" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9.3" stroke="currentColor" stroke-width="2"/><line x1="8" y1="15" x2="16" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </span>
+            Mitigé — Pomme
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features" id="fonctionnalites">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Fonctionnalités</span>
+        <h2>Tout ce qu'il faut pour la diversification de bébé</h2>
+        <p>Un carnet de bord simple, pensé pour se remplir en quelques secondes entre deux repas.</p>
+      </div>
+
+      <div class="feature-row">
+        <div class="feature-copy reveal">
+          <span class="feature-tag">📋 Journal de repas</span>
+          <h3>Ajoutez un repas en quelques secondes</h3>
+          <p>Enregistrez les aliments proposés et une note pour chaque repas ou chaque aliment. nibblenibble se souvient de ce que bébé a déjà goûté et de sa dernière réaction.</p>
+          <ul>
+            <li><span class="check">✓</span> Ajoutez des repas à venir ou passés</li>
+            <li><span class="check">✓</span> Liste exhaustive d'aliments classés par catégorie</li>
+          </ul>
+        </div>
+        <div class="feature-img reveal reveal-delay-1">
+          <div class="frame">
+            <img src="img/feature-add-meal.png" alt="Écran d'ajout d'un repas dans nibblenibble" loading="lazy" width="727" height="1527">
+            <div class="feature-tag-slot feature-tag-slot-top feature-tag-slot-low">
+              <div class="float-card flow-tag">
+                <div class="flow-step step-a">
+                  <svg class="check-box" viewBox="0 0 20 20" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect class="box" x="1.5" y="1.5" width="17" height="17" rx="3" stroke="var(--ink-soft)" stroke-width="1.6"/>
+                    <path class="tick" d="M5 10.3l3 3 7-7" stroke="var(--primary)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  Abricot
+                </div>
+                <div class="flow-step step-b">
+                  <svg class="check-box" viewBox="0 0 20 20" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect class="box" x="1.5" y="1.5" width="17" height="17" rx="3" stroke="var(--ink-soft)" stroke-width="1.6"/>
+                    <path class="tick" d="M5 10.3l3 3 7-7" stroke="var(--primary)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  Ananas
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-row reverse">
+        <div class="feature-copy reveal">
+          <span class="feature-tag">🗂️ Historique</span>
+          <h3>Un journal de repas complet</h3>
+          <p>Retrouvez tout l'historique des repas de bébé, classé par date, avec une recherche rapide par aliment ou par note — pour ne jamais oublier ce qui a plu ou pas.</p>
+          <ul>
+            <li><span class="check">✓</span> Notez la réaction de bébé pour chaque aliment testé</li>
+            <li><span class="check">✓</span> Export PDF du carnet complet, à tout moment</li>
+          </ul>
+        </div>
+        <div class="feature-img reveal reveal-delay-1">
+          <div class="frame">
+            <img src="img/feature-meals.png" alt="Écran de l'historique des repas passés dans nibblenibble" loading="lazy" width="727" height="1527">
+            <div class="feature-tag-slot feature-tag-slot-bottom">
+              <div class="float-card flow-tag">
+                <div class="flow-step step3-a reaction-row">
+                  <span class="chip-food">Agneau</span>
+                  <span class="chip-reaction" style="color:var(--red)">
+                    <svg viewBox="0 0 24 24" fill="none" width="16" height="16" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9.3" stroke="currentColor" stroke-width="2"/><path d="M8 15.3c1.1-1.3 2.5-2 4-2s2.9.7 4 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                    Pas aimé
+                  </span>
+                </div>
+                <div class="flow-step step3-b reaction-row">
+                  <span class="chip-food">Pomme</span>
+                  <span class="chip-reaction" style="color:var(--amber)">
+                    <svg viewBox="0 0 24 24" fill="none" width="16" height="16" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9.3" stroke="currentColor" stroke-width="2"/><line x1="8" y1="15" x2="16" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                    Mitigé
+                  </span>
+                </div>
+                <div class="flow-step step3-c reaction-row">
+                  <span class="chip-food">Ananas</span>
+                  <span class="chip-reaction" style="color:var(--sage)">
+                    <svg viewBox="0 0 24 24" fill="none" width="16" height="16" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9.3" stroke="currentColor" stroke-width="2"/><path d="M8 13.3c1.1 1.3 2.5 2 4 2s2.9-.7 4-2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                    Aimé
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-row">
+        <div class="feature-copy reveal">
+          <span class="feature-tag">📊 Statistiques</span>
+          <h3>Des statistiques claires, en un coup d'œil</h3>
+          <p>Combien d'aliments essayés, depuis combien de jours dure la diversification, et la répartition des réactions par catégorie : légumes, fruits, viandes, poissons...</p>
+          <ul>
+            <li><span class="check">✓</span> Compteurs mis à jour en temps réel</li>
+            <li><span class="check">✓</span> Aliments essayés classés par catégorie et par réaction</li>
+          </ul>
+        </div>
+        <div class="feature-img reveal reveal-delay-1">
+          <div class="frame">
+            <img src="img/feature-stats.png" alt="Écran de statistiques dans nibblenibble" loading="lazy" width="727" height="1526">
+            <div class="feature-tag-slot feature-tag-slot-top">
+              <div class="float-card">
+                <span class="ico" style="background:var(--primary-light); color:var(--primary); font-weight:800;">6</span>
+                Aliments essayés
+              </div>
+              <div class="float-card">
+                <span class="ico" style="background:var(--amber-light); color:var(--amber); font-weight:800;">2</span>
+                Jours de diversification
+              </div>
+            </div>
+            <div class="feature-tag-slot feature-tag-slot-bottom">
+              <div class="float-card flow-tag">
+                <div class="flow-step step3-a">
+                  <div class="reaction-row">
+                    <span class="left">
+                      <span class="ico" style="color:var(--sage)">
+                        <svg viewBox="0 0 24 24" fill="none" width="16" height="16" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9.3" stroke="currentColor" stroke-width="2"/><path d="M8 13.3c1.1 1.3 2.5 2 4 2s2.9-.7 4-2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                      </span>
+                      Aimé
+                    </span>
+                    <span class="right">4
+                      <svg viewBox="0 0 24 24" fill="none" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </span>
+                  </div>
+                </div>
+                <div class="flow-step step3-b">
+                  <div class="reaction-row">
+                    <span class="left">
+                      <span class="ico" style="color:var(--amber)">
+                        <svg viewBox="0 0 24 24" fill="none" width="16" height="16" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9.3" stroke="currentColor" stroke-width="2"/><line x1="8" y1="15" x2="16" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                      </span>
+                      Mitigé
+                    </span>
+                    <span class="right">2
+                      <svg viewBox="0 0 24 24" fill="none" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </span>
+                  </div>
+                </div>
+                <div class="flow-step step3-c">
+                  <div class="reaction-row">
+                    <span class="left">
+                      <span class="ico" style="color:var(--red)">
+                        <svg viewBox="0 0 24 24" fill="none" width="16" height="16" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9.3" stroke="currentColor" stroke-width="2"/><path d="M8 15.3c1.1-1.3 2.5-2 4-2s2.9.7 4 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                      </span>
+                      Pas aimé
+                    </span>
+                    <span class="right">1
+                      <svg viewBox="0 0 24 24" fill="none" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-row reverse">
+        <div class="feature-copy reveal">
+          <span class="feature-tag">👪 En famille</span>
+          <h3>Toute la famille impliquée</h3>
+          <p>Invitez votre partenaire, la nounou ou un proche à consulter et compléter le carnet de bébé, avec deux niveaux d'accès : lecture seule ou administrateur.</p>
+          <ul>
+            <li><span class="check">✓</span> Invitation par email, en un instant</li>
+            <li><span class="check">✓</span> Note de famille partagée sur l'accueil</li>
+          </ul>
+        </div>
+        <div class="feature-img reveal reveal-delay-1">
+          <div class="frame">
+            <img src="img/feature-family.png" alt="Écran de gestion de la famille dans nibblenibble" loading="lazy" width="727" height="1526">
+            <div class="feature-tag-slot feature-tag-slot-bottom">
+              <div class="float-card flow-tag flow-tag-wide">
+                <div class="flow-step step-a">
+                  <div class="mini-toggle">
+                    <span class="mini-pill toggle-a">Lecture seule</span>
+                    <span class="mini-pill toggle-b">Administrateur</span>
+                  </div>
+                </div>
+                <div class="flow-step step-b">
+                  <span class="ico" style="background:var(--primary-light); color:var(--primary);">
+                    <svg viewBox="0 0 24 24" fill="none" width="16" height="16" xmlns="http://www.w3.org/2000/svg"><path d="M4 5.5h16v13H4z" stroke="currentColor" stroke-width="1.8"/><path d="M4 6l8 6.5L20 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </span>
+                  <span class="typing-text">camille@email.com</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXTRAS -->
+  <section class="extras">
+    <div class="wrap extras-grid">
+      <div class="extra-card reveal">
+        <div class="ico" style="background:var(--primary-light);">📤</div>
+        <h4>Export PDF</h4>
+        <p>Générez un PDF du carnet de repas de bébé à tout moment, depuis Compte → Exporter mes données.</p>
+      </div>
+      <div class="extra-card reveal reveal-delay-1">
+        <div class="ico" style="background:var(--sage-light);">🌍</div>
+        <h4>3 langues</h4>
+        <p>L'application est disponible en français, anglais et espagnol, pour toute la famille.</p>
+      </div>
+      <div class="extra-card reveal reveal-delay-2">
+        <div class="ico" style="background:var(--amber-light);">🔒</div>
+        <h4>Vie privée respectée</h4>
+        <p>Vos données restent privées et ne sont jamais revendues. nibblenibble est financée par des publicités discrètes.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="faq" id="faq">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">FAQ</span>
+        <h2>Vos questions, nos réponses</h2>
+        <p>Tout ce qu'il faut savoir avant de commencer avec nibblenibble.</p>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item reveal">
+          <button class="faq-q">nibblenibble est-elle vraiment gratuite ?<span class="plus">+</span></button>
+          <div class="faq-a"><p>Oui, l'application est entièrement gratuite. Elle est financée par des publicités discrètes et respectueuses — vos données ne sont jamais revendues.</p></div>
+        </div>
+        <div class="faq-item reveal">
+          <button class="faq-q">Mes données et celles de bébé sont-elles privées ?<span class="plus">+</span></button>
+          <div class="faq-a"><p>Oui. Vos informations restent privées et ne sont jamais revendues à des tiers. Le détail complet est expliqué dans notre <a href="privacy-policy.html" style="color:var(--primary); text-decoration:underline;">politique de confidentialité</a>.</p></div>
+        </div>
+        <div class="faq-item reveal">
+          <button class="faq-q">Puis-je inviter mon/ma partenaire ou un proche ?<span class="plus">+</span></button>
+          <div class="faq-a"><p>Bien sûr. Depuis l'onglet Famille, invitez un proche par email avec un accès en lecture seule (ajout de réactions) ou administrateur (gestion complète des repas et de la famille).</p></div>
+        </div>
+        <div class="faq-item reveal">
+          <button class="faq-q">Sur quelles plateformes l'application est-elle disponible ?<span class="plus">+</span></button>
+          <div class="faq-a"><p>nibblenibble arrive prochainement sur Android via le Google Play Store. Une version iOS est également en préparation.</p></div>
+        </div>
+        <div class="faq-item reveal">
+          <button class="faq-q">Puis-je récupérer les données de bébé sous forme de document ?<span class="plus">+</span></button>
+          <div class="faq-a"><p>Oui, à tout moment depuis Compte → Exporter mes données, vous pouvez générer un PDF complet du carnet de repas de bébé.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta" id="cta">
+    <div class="wrap">
+      <div class="cta-card reveal">
+        <div class="cta-blob cta-blob-1"></div>
+        <div class="cta-blob cta-blob-2"></div>
+        <span class="eyebrow">🚀 Bientôt disponible</span>
+        <h2>Soyez prévenu·e dès le lancement</h2>
+        <p>nibblenibble arrive bientôt sur le Google Play Store. Laissez-nous votre email et on vous écrit dès que l'app est disponible.</p>
+        <div class="cta-actions">
+          <a class="btn btn-primary" href="mailto:contact@nibblenibble.app?subject=Me%20pr%C3%A9venir%20du%20lancement%20de%20nibblenibble">Être prévenu·e par email</a>
+          <a class="btn btn-ghost" href="privacy-policy.html">Lire la politique de confidentialité</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-top">
+      <div class="footer-brand reveal">
+        <span class="logo-mark"></span>
+        <p>Le carnet de diversification alimentaire de bébé, à remplir en famille.</p>
+        <div class="footer-socials">
+          <a href="mailto:contact@nibblenibble.app" aria-label="Email">✉️</a>
+        </div>
+      </div>
+      <div class="footer-col reveal">
+        <h5>Produit</h5>
+        <ul>
+          <li><a href="#fonctionnalites">Fonctionnalités</a></li>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="#cta">Être prévenu·e</a></li>
+        </ul>
+      </div>
+      <div class="footer-col reveal">
+        <h5>Légal</h5>
+        <ul>
+          <li><a href="privacy-policy.html">Confidentialité</a></li>
+          <li><a href="terms-of-service.html">CGU</a></li>
+        </ul>
+      </div>
+      <div class="footer-col reveal" id="langues">
+        <h5>Langues</h5>
+        <ul>
+          <li><a href="index-en.html">English</a></li>
+          <li><a href="index-es.html">Español</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 nibblenibble — Guillaume Raspaud</span>
+      <span>Fait avec 🍎 pour les familles</span>
+    </div>
+  </div>
+  <div class="footer-wordmark" aria-hidden="true"><span class="footer-wordmark-text">nibblenibble</span></div>
+</footer>
+
+<script>
+  (function () {
+    var themeToggle = document.getElementById('theme-toggle');
+    if (themeToggle) {
+      themeToggle.addEventListener('click', function () {
+        var root = document.documentElement;
+        var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', next);
+        try { localStorage.setItem('nn-theme', next); } catch (e) {}
+      });
+    }
+
+    var langDropdown = document.getElementById('lang-dropdown');
+    if (langDropdown) {
+      var langToggle = langDropdown.querySelector('.nav-dropdown-toggle');
+      var closeLangDropdown = function () {
+        langDropdown.classList.remove('open');
+        langToggle.setAttribute('aria-expanded', 'false');
+      };
+      langToggle.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var isOpen = langDropdown.classList.toggle('open');
+        langToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      });
+      document.addEventListener('click', function (e) {
+        if (!langDropdown.contains(e.target)) closeLangDropdown();
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') closeLangDropdown();
+      });
+    }
+
+    var wordmark = document.querySelector('.footer-wordmark-text');
+    var wordmarkWrap = document.querySelector('.footer-wordmark');
+    var fitWordmark = function () {
+      if (!wordmark || !wordmarkWrap) return;
+      wordmark.style.transform = 'scaleX(1)';
+      var textWidth = wordmark.getBoundingClientRect().width;
+      var containerWidth = wordmarkWrap.getBoundingClientRect().width;
+      if (textWidth > 0 && containerWidth > 0) {
+        wordmark.style.transform = 'scaleX(' + (containerWidth / textWidth) + ')';
+      }
+    };
+    fitWordmark();
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(fitWordmark);
+    }
+    var resizeTimer;
+    window.addEventListener('resize', function () {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(fitWordmark, 120);
+    });
+
+    var header = document.getElementById('site-header');
+    var onScroll = function () {
+      header.classList.toggle('scrolled', window.scrollY > 12);
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    var revealEls = document.querySelectorAll('.reveal');
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in');
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+      revealEls.forEach(function (el) { io.observe(el); });
+    } else {
+      revealEls.forEach(function (el) { el.classList.add('in'); });
+    }
+
+    document.querySelectorAll('.faq-q').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var item = btn.parentElement;
+        var answer = item.querySelector('.faq-a');
+        var isOpen = item.classList.contains('open');
+        document.querySelectorAll('.faq-item.open').forEach(function (openItem) {
+          if (openItem !== item) {
+            openItem.classList.remove('open');
+            openItem.querySelector('.faq-a').style.maxHeight = null;
+          }
+        });
+        if (isOpen) {
+          item.classList.remove('open');
+          answer.style.maxHeight = null;
+        } else {
+          item.classList.add('open');
+          answer.style.maxHeight = answer.scrollHeight + 'px';
+        }
+      });
+    });
+  })();
+</script>
+
+</body>
+</html>
