@@ -3,7 +3,7 @@
 import '../../l10n/app_strings.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/animated_check_mark.dart';
-import '../onboarding_choice_screen.dart';
+import '../intro_tutorial_screen.dart';
 
 /// Shown for a few seconds right after account creation, then advances on
 /// its own — the user isn't meant to act on this screen, just see it.
@@ -21,7 +21,7 @@ class _AccountCreatedScreenState extends State<AccountCreatedScreen> {
     Future.delayed(const Duration(milliseconds: 2600), () {
       if (!mounted) return;
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const OnboardingChoiceScreen()),
+        MaterialPageRoute(builder: (_) => const IntroTutorialScreen()),
       );
     });
   }

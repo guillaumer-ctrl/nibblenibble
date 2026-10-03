@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1045105533398-hqd7c3o32mhj3aki608npjdadvtqnanq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nibblenibble.nibblenibble",
+            "certificate_hash": "edf8fb0b713f76342d88f14354b1ddde9751da9e"
+          }
+        },
+        {
           "client_id": "1045105533398-se8hfueate45cl1ra2djpk7jv1hsqfi0.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

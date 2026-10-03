@@ -218,6 +218,47 @@ class AppStrings {
         'requiere un inicio de sesión reciente para eliminar una cuenta.',
   );
 
+  // --- Intro tutorial -----------------------------------------------------
+  String get introSkip => _t('Passer', 'Skip', 'Omitir');
+  String get introNext => _t('Suivant', 'Next', 'Siguiente');
+  String get introStart => _t('C\'est parti', 'Let\'s go', 'Empezar');
+  String get introLogTitle =>
+      _t('Note chaque repas', 'Log every meal', 'Anota cada comida');
+  String get introLogBody => _t(
+    'Ajoute les aliments proposés à bébé et sa réaction : aimé, mitigé ou '
+        'pas aimé. Tu peux aussi ajouter une note.',
+    'Add the foods you offered your baby and their reaction: liked, mixed '
+        'or disliked. You can add a note too.',
+    'Añade los alimentos que ofreciste a tu bebé y su reacción: le gustó, '
+        'mixta o no le gustó. También puedes añadir una nota.',
+  );
+  String get introStatsTitle => _t(
+    'Suis les progrès',
+    'Follow the progress',
+    'Sigue el progreso',
+  );
+  String get introStatsBody => _t(
+    'Dans Stats, vois d\'un coup d\'œil les aliments essayés, les jours de '
+        'diversification et les réactions de bébé.',
+    'In Stats, see at a glance the foods tried, the days of diversification '
+        'and your baby\'s reactions.',
+    'En Estadísticas, ve de un vistazo los alimentos probados, los días de '
+        'diversificación y las reacciones de tu bebé.',
+  );
+  String get introFamilyTitle => _t(
+    'Partage en famille',
+    'Share with your family',
+    'Comparte en familia',
+  );
+  String get introFamilyBody => _t(
+    'Invite ton/ta partenaire ou un proche depuis l\'onglet Famille. Vous '
+        'suivez le même carnet, et tu peux exporter un PDF pour le pédiatre.',
+    'Invite your partner or a relative from the Family tab. You follow the '
+        'same journal, and you can export a PDF for the pediatrician.',
+    'Invita a tu pareja o a un familiar desde la pestaña Familia. Siguen el '
+        'mismo diario y puedes exportar un PDF para el pediatra.',
+  );
+
   // --- Onboarding choice --------------------------------------------------
   String get welcome => _t('Bienvenue', 'Welcome', 'Bienvenido');
   String get gettingStarted =>

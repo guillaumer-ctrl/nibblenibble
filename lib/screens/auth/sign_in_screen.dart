@@ -25,6 +25,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
   final _passwordController = TextEditingController();
   bool _loadingEmail = false;
   bool _loadingGoogle = false;
+  bool _obscurePassword = true;
 
   @override
   void dispose() {
@@ -123,8 +124,20 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                       const SizedBox(height: 14),
                       TextFormField(
                         controller: _passwordController,
-                        decoration: InputDecoration(labelText: s.password),
-                        obscureText: true,
+                        decoration: InputDecoration(
+                          labelText: s.password,
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _obscurePassword
+                                  ? Icons.visibility_outlined
+                                  : Icons.visibility_off_outlined,
+                            ),
+                            onPressed: () => setState(
+                              () => _obscurePassword = !_obscurePassword,
+                            ),
+                          ),
+                        ),
+                        obscureText: _obscurePassword,
                         validator: (v) =>
                             (v == null || v.isEmpty) ? s.required : null,
                       ),

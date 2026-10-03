@@ -11,6 +11,7 @@ import '../widgets/animated_accordion.dart';
 import '../widgets/app_loading_indicator.dart';
 import '../widgets/banner_ad_widget.dart';
 import '../widgets/error_retry_view.dart';
+import '../widgets/food_block.dart';
 import '../widgets/reaction_face_icon.dart';
 
 class StatsScreen extends ConsumerStatefulWidget {
@@ -229,29 +230,15 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
                                 Wrap(
                                   spacing: 8,
                                   runSpacing: 8,
-                                  // Same Chip style as the expandable food
-                                  // list under each reaction above — keeps
-                                  // this section visually consistent with
-                                  // "Réactions" instead of its own look, and
-                                  // (unlike FoodBlock) never shows a
-                                  // reaction icon here, just the tint.
+                                  // Same FoodBlock pill as meal cards, so a
+                                  // food tried looks identical here and
+                                  // there — with or without a reaction.
                                   children: foods.map((f) {
                                     final reaction = currentReactions[f.id];
-                                    return Chip(
-                                      label: Text(f.displayName(context)),
-                                      visualDensity: VisualDensity.compact,
-                                      backgroundColor: reaction != null
-                                          ? reaction
-                                                .tint(context)
-                                                .withValues(alpha: 0.28)
-                                          : AppColors.of(context).primaryLight,
-                                      side: BorderSide(
-                                        color: reaction != null
-                                            ? reaction
-                                                  .tint(context)
-                                                  .withValues(alpha: 0.85)
-                                            : AppColors.of(context).line,
-                                      ),
+                                    return FoodBlock(
+                                      name: f.displayName(context),
+                                      reaction: reaction,
+                                      expand: false,
                                     );
                                   }).toList(),
                                 ),
