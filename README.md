@@ -43,7 +43,7 @@ flutter build appbundle --release   # App Bundle pour le Play Store
 | `android/app/google-services.json` | Config client Firebase (Android) | Oui — config publique, pas un secret |
 | `android/key.properties` | Mots de passe du keystore de signature release | Non (gitignored) |
 | Keystore `.jks` référencé par `key.properties` | Clé de signature release | Non (gitignored) |
-| `ios/Runner/GoogleService-Info.plist` | Config client Firebase (iOS) | À ajouter quand le projet iOS sera configuré dans Firebase/AdMob — voir `TODO.md` |
+| `ios/Runner/GoogleService-Info.plist` | Config client Firebase (iOS) | À ajouter quand le projet iOS sera configuré dans Firebase/AdMob |
 
 Aucune variable d'environnement `.env` : la config native (Firebase, signature) passe entièrement par les fichiers ci-dessus, lus directement par Gradle/CocoaPods.
 
@@ -57,6 +57,3 @@ flutter test
 
 `.github/workflows/ci.yml` exécute `flutter analyze` + `flutter test` sur chaque push et pull request vers `main`.
 
-## Suivi pré-lancement
-
-Voir `TODO.md` à la racine du repo pour la liste vivante des tâches avant/après publication sur les stores.
